@@ -1,0 +1,209 @@
+import type {Dictionary} from "./en"
+
+const it: Dictionary = {
+  app: {
+    name: "WalkingBar",
+    quit: "Esci da WalkingBar",
+    open: "Apri WalkingBar",
+  },
+  nav: {
+    history: "Cronologia",
+    settings: "Impostazioni",
+    back: "Indietro",
+  },
+  connection: {
+    connected: (params) => `Connesso a ${params.name}`,
+    connecting: (params) => `Connessione a ${params.name}…`,
+    scanning: "Ricerca del tuo WalkingPad…",
+    stopped: "Disconnesso",
+    bluetoothUnavailable: "Bluetooth disattivato o non autorizzato",
+    bluetoothUnavailableHint:
+      "Attiva il Bluetooth e autorizza WalkingBar in Impostazioni di Sistema › Privacy e sicurezza › Bluetooth.",
+    retrying: (params) => `Nuovo tentativo tra ${params.seconds} s`,
+    failure: {
+      padNotFound: "WalkingPad non trovato",
+      connectFailed: "Impossibile connettersi al WalkingPad",
+      unsupportedProtocol: "Questo tapis roulant non è ancora supportato",
+      disconnected: "Connessione persa",
+    },
+    failureHint: {
+      padNotFound:
+        "Verifica che il tapis sia acceso e che l'app KS Fit non sia connessa: il tapis accetta una sola connessione alla volta.",
+      connectFailed:
+        "Chiudi l'app KS Fit sul telefono se è connessa: il tapis accetta una sola connessione alla volta.",
+      unsupportedProtocol:
+        "Non espone il protocollo KingSmith. Apri una issue indicando il modello.",
+      disconnected: "Riconnessione automatica in corso.",
+    },
+  },
+  belt: {
+    idle: "Fermo",
+    standby: "In standby",
+    starting: "Avvio…",
+    unknown: "Stato sconosciuto",
+  },
+  controls: {
+    wakeUpFailed: "Il tapis non si è riattivato. Riprova.",
+    padStoppedNoSteps: "Fermato dal tapis: nessun passo rilevato.",
+    padStoppedByPad: "Fermato dal tapis o dal telecomando.",
+    start: "Avvia",
+    pause: "Pausa",
+    resume: "Riprendi",
+    endSession: "Termina",
+    slower: "Più piano",
+    faster: "Più veloce",
+    manual: "Manuale",
+    automatic: "Automatico",
+    speedRange: (params) => `Da ${params.min} a ${params.max} km/h`,
+    commandFailed: "Impossibile inviare il comando al tapis.",
+    plateau: (params) => `Livello ${params.speed} · ${params.time}`,
+    plateauReady: (params) =>
+      `Livello ${params.speed} · ${params.time} · visibile su Strava`,
+  },
+  goal: {
+    title: "Obiettivo",
+    distance: "Distanza",
+    duration: "Tempo",
+    set: "Imposta",
+    hintSession:
+      "Il tapis si ferma da solo quando questa sessione raggiunge l'obiettivo.",
+    hintDay:
+      "Il tapis si ferma da solo quando il totale del giorno raggiunge l'obiettivo.",
+    remaining: (params) => `Mancano ${params.value}`,
+    reached: "Obiettivo raggiunto",
+    dismiss: "OK",
+    invalid: "Inserisci un numero positivo.",
+    alreadyWalked: "Scegli più di quanto hai già camminato.",
+  },
+  stats: {
+    duration: "Durata",
+    distance: "Distanza",
+    steps: "Passi",
+    averageSpeed: "Vel. media",
+    maxSpeed: "Vel. massima",
+    sessions: "Sessioni",
+  },
+  session: {
+    endsIn: (params) => `Termina tra ${params.time} se non riprendi`,
+    title: "Sessione in corso",
+    paused: "In pausa",
+  },
+  today: {
+    title: "Oggi",
+    empty: "Nessuna camminata oggi.",
+  },
+  history: {
+    title: "Cronologia",
+    empty: "Nessuna sessione registrata.",
+    today: "Oggi",
+    date: "Data",
+    timeOfDay: "Ora",
+    yesterday: "Ieri",
+    inProgress: "in corso",
+    edited: "modificata",
+    delete: "Elimina",
+    confirmDelete: "Eliminare dall'app (non da Strava)?",
+    cancel: "Annulla",
+  },
+  strava: {
+    title: "Strava",
+    defaultTitle: "Camminata sul tapis roulant",
+    connect: "Connetti Strava",
+    connecting: "In attesa dell'autorizzazione nel browser…",
+    disconnect: "Disconnetti",
+    connectedAs: (params) => `Connesso: ${params.name}`,
+    connectHint: "Per pubblicare le camminate.",
+    status: {
+      published: "Pubblicata su Strava",
+      failed: "Pubblicazione non riuscita",
+      dismissed: "Non pubblicata, segnata come già su Strava",
+      notPublished: "Non ancora pubblicata",
+    },
+    publish: "Pubblica",
+    allowAgain: "Consenti di nuovo la pubblicazione",
+    preview: {
+      title: (params) => `Pubblica ${params.day}`,
+      sessionTitle: (params) => `Pubblica la sessione delle ${params.time}`,
+      name: "Titolo",
+      descriptionPlaceholder:
+        "Aggiungi una nota (facoltativo). Strava mostra già la distanza, il tempo, i passi e ogni sessione.",
+      description: "Descrizione",
+      publishing: "Pubblicazione…",
+      dismiss: "È già su Strava, non pubblicare",
+      walksAlreadyOnStrava: (params) =>
+        `Strava ha già una camminata in questo giorno: ${params.walks}. Pubblicando aggiungerai un'altra attività.`,
+      activeSessionWarning:
+        "C'è una sessione in corso. Le sessioni registrate dopo la pubblicazione non saranno aggiunte a Strava.",
+      sessionInProgressWarning:
+        "Questa sessione è in corso. Ciò che camminerai dopo la pubblicazione non sarà aggiunto a Strava.",
+      noSessions: "Nessuna sessione da pubblicare in questo giorno.",
+    },
+    settings: {
+      application: "Applicazione Strava",
+      applicationHint: "Dominio di callback: localhost",
+      clientId: "Client ID",
+      clientSecret: "Client secret",
+      saveCredentials: "Salva",
+      autoPublish: "Pubblica automaticamente",
+      autoPublishSessionHint: "Ogni sessione parte appena finisce.",
+      grouping: "Un'attività per",
+      groupingDay: "Giorno",
+      groupingSession: "Sessione",
+      publishTime: "Pubblica ogni giorno alle",
+      titleTemplate: "Titolo dell'attività",
+      titleTemplateHint:
+        "Variabili: {distance} {duration} {sessions} {steps} {date}",
+      hideFromHome: "Nascondi dal feed principale",
+      hideFromHomeHint: "La visibilità segue le tue impostazioni Strava.",
+    },
+    errors: {
+      notConfigured: "Aggiungi la tua applicazione Strava nelle impostazioni.",
+      invalidCredentials: "Strava ha rifiutato questo Client ID o secret.",
+      notConnected: "Prima connetti Strava.",
+      encryptionUnavailable:
+        "Il portachiavi di macOS non è disponibile per salvare i token Strava.",
+      authorizationDenied: "L'autorizzazione Strava è stata rifiutata.",
+      missingScope:
+        "Strava non ha concesso il permesso di caricare attività. Connettiti di nuovo lasciando selezionato quel permesso.",
+      authorizationTimeout:
+        "L'autorizzazione Strava ha richiesto troppo tempo. Riprova.",
+      rateLimited:
+        "Limite di richieste Strava raggiunto. Riprova tra 15 minuti.",
+      network: "Strava non è raggiungibile. Controlla la connessione.",
+      api: "Strava ha restituito un errore.",
+    },
+    oauthPage: {
+      success: "WalkingBar è connesso a Strava. Puoi chiudere questa scheda.",
+      failure:
+        "La connessione a Strava non è riuscita. Puoi chiudere questa scheda e riprovare da WalkingBar.",
+    },
+  },
+  settings: {
+    title: "Impostazioni",
+    language: "Lingua",
+    systemLanguage: "Sistema",
+    languageNames: {
+      en: "English",
+      fr: "Français",
+      es: "Español",
+      it: "Italiano",
+      de: "Deutsch",
+      nl: "Nederlands",
+    },
+    pauseTimeout: "Fine sessione dopo",
+    pauseTimeoutHint: "Pausa che termina la sessione.",
+    minutes: "min",
+    launchAtLogin: "Apri al login",
+    launchAtLoginDevHint: "Funziona solo nell'app pacchettizzata.",
+    pad: "WalkingPad",
+    speedShortcuts: "Scorciatoie di velocità",
+    plateauIndicator: "Indicatore di livello",
+    plateauIndicatorHint: "Indica se una velocità è durata abbastanza.",
+    speedShortcutsHint: (params) => `Fino a ${params.max}, sotto la velocità.`,
+    showDiagnosticsLog: "Mostra il log di diagnostica",
+    forgetPad: "Dimentica questo tapis",
+    version: (params) => `Versione ${params.version}`,
+  },
+}
+
+export default it

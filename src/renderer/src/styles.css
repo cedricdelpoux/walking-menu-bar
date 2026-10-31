@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  --color-accent: #10b981;
+  --color-accent-strong: #0f766e;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background: transparent;
+  overflow: hidden;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  color: #1c1c1e;
+  font-family: var(--font-sans);
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #f2f2f7;
+  }
+}
+
+input,
+select {
+  user-select: text;
+}
+
+/* Tailwind 4 no longer gives buttons a pointer cursor. */
+button:not(:disabled),
+[role="button"]:not(:disabled) {
+  cursor: pointer;
+}
