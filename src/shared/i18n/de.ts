@@ -8,6 +8,7 @@ const de: Dictionary = {
   },
   nav: {
     history: "Verlauf",
+    stats: "Statistik",
     settings: "Einstellungen",
     back: "Zurück",
   },
@@ -82,6 +83,14 @@ const de: Dictionary = {
     averageSpeed: "Ø Tempo",
     maxSpeed: "Max. Tempo",
     sessions: "Einheiten",
+    activeDays: "Tage",
+    bestDay: (params) => `Bester Tag: ${params.distance}`,
+    period: {
+      week: "7 Tage",
+      month: "30 Tage",
+      year: "12 Monate",
+      all: "Alle",
+    },
   },
   session: {
     endsIn: (params) => `Endet in ${params.time}, wenn du nicht fortsetzt`,

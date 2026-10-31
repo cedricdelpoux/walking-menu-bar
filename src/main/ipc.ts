@@ -22,7 +22,8 @@ import type {
 } from "./strava/activity-publisher"
 import type {StravaAccount} from "./strava/strava-account"
 
-const MAX_HISTORY_DAYS = 366
+const MAX_HISTORY_DAYS = 36_600
+const MAX_STRAVA_SYNC_DAYS = 366
 
 export interface IpcDependencies {
   appInfo: AppInfo
@@ -144,7 +145,7 @@ export function registerIpcHandlers(dependencies: IpcDependencies): void {
   ipcMain.handle(IpcChannel.disconnectStrava, () => stravaAccount.disconnect())
   ipcMain.handle(IpcChannel.syncStrava, (_event, dayCount: number) =>
     publisher.syncWithStrava(
-      Math.min(MAX_HISTORY_DAYS, Math.max(1, Math.round(dayCount)))
+      Math.min(MAX_STRAVA_SYNC_DAYS, Math.max(1, Math.round(dayCount)))
     )
   )
   ipcMain.handle(

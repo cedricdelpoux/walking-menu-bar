@@ -33,7 +33,7 @@ A few environment variables help when working on the UI:
 | ------------------------------------ | ----------------------------------------------------------- |
 | `WALKING_BAR_SHOW_ON_START=1`        | Opens the popover on start                                  |
 | `WALKING_BAR_KEEP_OPEN=1`            | Keeps the popover open when it loses focus                  |
-| `WALKING_BAR_VIEW=history`           | Opens another view (`history`, `settings`)                  |
+| `WALKING_BAR_VIEW=history`           | Opens another view (`history`, `stats`, `settings`)         |
 | `WALKING_BAR_CAPTURE=/path/shot.png` | Saves a screenshot of the popover a few seconds after start |
 
 Some tools (the VS Code extension host for example) export `ELECTRON_RUN_AS_NODE=1`, which turns Electron into a plain Node.js process. The `dev` and `preview` scripts unset it. Unset it as well when you start the packaged app from such a terminal, or it quits right away.

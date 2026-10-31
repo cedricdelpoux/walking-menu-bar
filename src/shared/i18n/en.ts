@@ -13,6 +13,7 @@ const en = {
   },
   nav: {
     history: "History",
+    stats: "Stats",
     settings: "Settings",
     back: "Back",
   },
@@ -84,6 +85,14 @@ const en = {
     averageSpeed: "Avg speed",
     maxSpeed: "Max speed",
     sessions: "Sessions",
+    activeDays: "Days",
+    bestDay: (params: {distance: string}) => `Best day: ${params.distance}`,
+    period: {
+      week: "7 days",
+      month: "30 days",
+      year: "12 months",
+      all: "All",
+    },
   },
   session: {
     endsIn: (params: {time: string}) =>

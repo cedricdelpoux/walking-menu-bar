@@ -12,7 +12,7 @@ export function formatNumber(
 }
 
 // Strava truncates distances, so 3816 m shows as 3.81 km there: the app does the same.
-export function formatKilometers(
+export function formatKilometerValue(
   meters: number,
   locale: Locale,
   fractionDigits = 2
@@ -20,7 +20,15 @@ export function formatKilometers(
   const truncatedKilometers =
     Math.trunc((meters / 1000) * 10 ** fractionDigits + 1e-9) /
     10 ** fractionDigits
-  return `${formatNumber(truncatedKilometers, locale, fractionDigits)} km`
+  return formatNumber(truncatedKilometers, locale, fractionDigits)
+}
+
+export function formatKilometers(
+  meters: number,
+  locale: Locale,
+  fractionDigits = 2
+): string {
+  return `${formatKilometerValue(meters, locale, fractionDigits)} km`
 }
 
 export function formatSpeed(kmh: number, locale: Locale): string {

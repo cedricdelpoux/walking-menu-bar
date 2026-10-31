@@ -1,5 +1,6 @@
 import {useLayoutEffect, useRef, useState} from "react"
 import {
+  ChartColumn,
   ChevronLeft,
   Footprints,
   History,
@@ -17,8 +18,9 @@ import {dayLabel} from "./labels"
 import {HistoryView, type PublishRequest} from "./views/HistoryView"
 import {PublishView} from "./views/PublishView"
 import {SettingsView} from "./views/SettingsView"
+import {StatsView} from "./views/StatsView"
 
-type View = "home" | "history" | "settings" | "publish"
+type View = "home" | "history" | "stats" | "settings" | "publish"
 
 const initialView =
   (new URLSearchParams(window.location.search).get("view") as View | null) ??
@@ -70,6 +72,7 @@ export function App() {
               />
             )}
             {view === "history" && <HistoryView onPublish={openPublish} />}
+            {view === "stats" && <StatsView />}
             {view === "publish" && publishRequest && (
               <PublishView
                 target={publishRequest.target}
@@ -138,6 +141,7 @@ function Header({
         })
   const titles: Record<Exclude<View, "home">, string> = {
     history: t("history.title"),
+    stats: t("nav.stats"),
     settings: t("settings.title"),
     publish: publishRequest ? publishTitle(publishRequest) : "",
   }
@@ -157,6 +161,12 @@ function Header({
               onClick={() => onNavigate("history")}
             >
               <History className="h-4 w-4" />
+            </IconButton>
+            <IconButton
+              label={t("nav.stats")}
+              onClick={() => onNavigate("stats")}
+            >
+              <ChartColumn className="h-4 w-4" />
             </IconButton>
             <IconButton
               label={t("nav.settings")}

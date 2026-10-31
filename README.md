@@ -15,6 +15,7 @@ WalkingBar is an unofficial macOS menu bar app for your WalkingPad. It drives a 
 - Custom speed shortcuts
 - Distance and time goals
 - History with speed charts
+- Walking stats (distance, time, steps)
 - Strava publication (manual or automatic)
 - English, French, Spanish, Italian, German and Dutch
 
