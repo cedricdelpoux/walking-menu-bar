@@ -328,6 +328,20 @@ describe("PadService preferred mode", () => {
     expect(createService().getLiveState().goals.session).toBeNull()
   })
 
+  it("keeps the plateau of the current session across restarts", () => {
+    createService()
+    walkTo(0)
+    walkTo(60)
+    walkTo(120)
+
+    const restarted = createService()
+    expect(restarted.getLiveState().plateau).toEqual({
+      speedKmh: 3.6,
+      walkedMs: 120_000,
+      walkingSince: null,
+    })
+  })
+
   it("keeps asking a sleeping pad to start until its belt starts", async () => {
     const service = createService()
     receive(ASLEEP)

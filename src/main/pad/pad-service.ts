@@ -19,6 +19,7 @@ import type {
   PadModel,
   PadStatus,
   PadStop,
+  Plateau,
   SelectableMode,
 } from "../../shared/pad"
 import {
@@ -46,6 +47,7 @@ import {clampToModel, nextTargetSpeed} from "./speed-control"
 
 export const PERIPHERAL_ID_KEY = "padPeripheralId"
 export const PREFERRED_MODE_KEY = "padPreferredMode"
+export const PLATEAU_KEY = "padPlateau"
 export const WALK_GOAL_KEYS: Record<GoalScope, string> = {
   session: "walkGoal",
   day: "dayWalkGoal",
@@ -91,7 +93,7 @@ export class PadService extends EventEmitter<PadServiceEvents> {
   private status: PadStatus | null = null
   private model: PadModel | null = null
   private targetSpeed: {speedKmh: number; requestedAt: number} | null = null
-  private readonly plateauTracker = new PlateauTracker()
+  private readonly plateauTracker: PlateauTracker
   private resumeSpeed: {
     speedKmh: number
     requestedAt: number
@@ -134,6 +136,11 @@ export class PadService extends EventEmitter<PadServiceEvents> {
     )
     if (savedDayGoal?.day === dayKeyOf(Date.now()))
       this.goalTrackers.day.setGoal(savedDayGoal.goal)
+    this.plateauTracker = new PlateauTracker(
+      recorder.currentSession
+        ? (appState.get<Plateau>(PLATEAU_KEY) ?? null)
+        : null
+    )
     connection.on("state", (state) => this.handleConnectionState(state))
     connection.on("status", (status) => this.handleStatus(status))
   }
@@ -358,6 +365,7 @@ export class PadService extends EventEmitter<PadServiceEvents> {
     this.restoreSpeedAfterResume(status)
     const events = this.recorder.handleStatus(status)
     this.handleSessionEvents(events)
+    this.appState.set(PLATEAU_KEY, this.plateauTracker.toSaved(Date.now()))
     if (!isBeltMoving(status)) this.isStopRequested = false
     if (this.shouldEndSessionWhenBeltStops && !isBeltMoving(status))
       this.endCurrentSession()

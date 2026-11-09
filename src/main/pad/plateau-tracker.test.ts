@@ -78,4 +78,21 @@ describe("PlateauTracker", () => {
     expect(tracker.current?.speedKmh).toBe(2.5)
     expect(walkedSeconds(tracker, now)).toBe(3)
   })
+
+  it("saves the plateau frozen at the given time", () => {
+    const tracker = new PlateauTracker()
+    const now = feed(tracker, [
+      running(3),
+      running(3),
+      running(3),
+      running(3),
+      10,
+    ])
+    const restored = new PlateauTracker(tracker.toSaved(now))
+    expect(restored.current).toEqual({
+      speedKmh: 3,
+      walkedMs: 13_000,
+      walkingSince: null,
+    })
+  })
 })

@@ -6,11 +6,23 @@ const STEADY_SPEED_HOLD_MS = 3000
 // Strava never shows the pauses, the starts or the stops, so only walking at the plateau speed
 // counts: the plateau freezes during them and carries on afterwards.
 export class PlateauTracker {
-  private plateau: Plateau | null = null
   private newSpeed: {speedKmh: number; since: number} | null = null
+
+  constructor(private plateau: Plateau | null = null) {}
 
   get current(): Plateau | null {
     return this.plateau && {...this.plateau}
+  }
+
+  // Frozen at the given time, so a restored plateau never counts the time the app was closed.
+  toSaved(now: number): Plateau | null {
+    if (!this.plateau) return null
+    const {walkedMs, walkingSince} = this.plateau
+    return {
+      ...this.plateau,
+      walkedMs: walkedMs + (walkingSince === null ? 0 : now - walkingSince),
+      walkingSince: null,
+    }
   }
 
   update(status: PadStatus, now: number): void {
