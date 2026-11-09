@@ -58,9 +58,8 @@ const TARGET_SPEED_HOLD_MS = 3000
 const PAD_STOP_WITHOUT_STEPS_MS = 4000
 const RESUME_SPEED_TIMEOUT_MS = 20_000
 const HISTORY_PROGRESS_THROTTLE_MS = 10_000
-// The C2 ignores mode commands while asleep and wakes up in automatic mode, so the preferred
-// mode is sent again once it is awake, but only right after a start: a mode chosen with the
-// remote afterwards must not be overridden.
+// The C2 wakes up in automatic mode, so the preferred mode is sent again once it is awake, but
+// only right after a start: a mode chosen with the remote afterwards must not be overridden.
 const PREFERRED_MODE_ENFORCEMENT_MS = 15_000
 const MODE_CORRECTION_INTERVAL_MS = 2000
 // Past this delay a reached goal no longer stops the belt, so restarting it with the remote works.
@@ -422,10 +421,11 @@ export class PadService extends EventEmitter<PadServiceEvents> {
   }
 
   private async sendStartCommands(reason: CommandReason): Promise<void> {
-    const isAwakeInAnotherMode =
-      this.status?.mode !== "standby" &&
-      this.status?.mode !== this.preferredMode
-    if (isAwakeInAnotherMode)
+    const mode = this.status?.mode
+    // A sleeping C2 ignores every command but a switch to automatic mode, which wakes it up.
+    if (mode === "standby")
+      await this.sendCommand({type: "setMode", mode: "automatic"}, reason)
+    else if (mode !== this.preferredMode)
       await this.sendCommand(
         {type: "setMode", mode: this.preferredMode},
         reason

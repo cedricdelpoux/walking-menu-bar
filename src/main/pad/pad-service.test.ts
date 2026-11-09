@@ -124,23 +124,23 @@ describe("PadService preferred mode", () => {
     const service = createService()
     receive(ASLEEP)
     await service.startBelt()
-    expect(sentModes()).toEqual([])
+    expect(sentModes()).toEqual(["automatic"])
 
     receive(STARTING_IN_AUTOMATIC)
-    expect(sentModes()).toEqual(["manual"])
+    expect(sentModes()).toEqual(["automatic", "manual"])
 
     vi.advanceTimersByTime(1000)
     receive(STARTING_IN_AUTOMATIC)
-    expect(sentModes()).toEqual(["manual"])
+    expect(sentModes()).toEqual(["automatic", "manual"])
 
     vi.advanceTimersByTime(1000)
     receive(RUNNING_IN_AUTOMATIC)
-    expect(sentModes()).toEqual(["manual", "manual"])
+    expect(sentModes()).toEqual(["automatic", "manual", "manual"])
 
     receive(RUNNING_IN_MANUAL)
     vi.advanceTimersByTime(5000)
     receive(RUNNING_IN_AUTOMATIC)
-    expect(sentModes()).toEqual(["manual", "manual"])
+    expect(sentModes()).toEqual(["automatic", "manual", "manual"])
   })
 
   describe("resuming a paused session", () => {
@@ -336,16 +336,23 @@ describe("PadService preferred mode", () => {
 
     vi.advanceTimersByTime(2000)
     receive(ASLEEP)
-    expect(sentCommandTypes()).toEqual(["start"])
+    expect(sentCommandTypes()).toEqual(["setMode", "start"])
 
     vi.advanceTimersByTime(1000)
     receive(ASLEEP)
-    expect(sentCommandTypes()).toEqual(["start", "start"])
+    await vi.waitFor(() =>
+      expect(sentCommandTypes()).toEqual([
+        "setMode",
+        "start",
+        "setMode",
+        "start",
+      ])
+    )
 
     vi.advanceTimersByTime(3000)
     receive(IDLE_IN_AUTOMATIC)
     await vi.waitFor(() =>
-      expect(sentCommandTypes()).toEqual(["start", "start", "setMode", "start"])
+      expect(sentModes()).toEqual(["automatic", "automatic", "manual"])
     )
 
     receive(STARTING_IN_MANUAL)
@@ -371,7 +378,7 @@ describe("PadService preferred mode", () => {
     await service.stopBelt()
     vi.advanceTimersByTime(5000)
     receive(IDLE_IN_AUTOMATIC)
-    expect(sentCommandTypes()).toEqual(["start", "stop"])
+    expect(sentCommandTypes()).toEqual(["setMode", "start", "stop"])
   })
 
   it("logs why the belt stopped", () => {
