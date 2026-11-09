@@ -11,6 +11,7 @@ import type {AppStateRepository} from "./storage/app-state-repository"
 
 const SETTINGS_KEY = "settings"
 const TIME_OF_DAY = /^([01]\d|2[0-3]):[0-5]\d$/
+const HEX_COLOR = /^#[0-9a-f]{6}$/i
 
 function clamp(
   value: unknown,
@@ -44,6 +45,9 @@ function sanitize(settings: Settings): Settings {
   const {min, max} = PAUSE_TIMEOUT_RANGE_MINUTES
   return {
     ...settings,
+    accentColor: HEX_COLOR.test(settings.accentColor)
+      ? settings.accentColor.toLowerCase()
+      : DEFAULT_SETTINGS.accentColor,
     pauseTimeoutMinutes: Math.round(
       clamp(
         settings.pauseTimeoutMinutes,

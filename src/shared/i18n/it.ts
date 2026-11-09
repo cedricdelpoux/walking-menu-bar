@@ -202,6 +202,8 @@ const it: Dictionary = {
     pauseTimeout: "Fine sessione dopo",
     pauseTimeoutHint: "Pausa che termina la sessione.",
     minutes: "min",
+    accentColor: "Colore",
+    customColor: "Colore personalizzato",
     launchAtLogin: "Apri al login",
     launchAtLoginDevHint: "Funziona solo nell'app pacchettizzata.",
     pad: "WalkingPad",

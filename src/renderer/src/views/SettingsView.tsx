@@ -7,6 +7,7 @@ import {createTranslator} from "@shared/i18n"
 import {DEFAULT_SPEED_RANGE, speedsInRange} from "@shared/pad"
 import {isValidCredentials, type PublicationGrouping} from "@shared/strava"
 import {
+  ACCENT_COLORS,
   MAX_SPEED_SHORTCUTS,
   PAUSE_TIMEOUT_RANGE_MINUTES,
   type Settings,
@@ -17,7 +18,7 @@ import {useAppInfo, useStravaState} from "../hooks"
 import {ConnectStravaButton} from "../components/StravaControls"
 import {useI18n} from "../i18n"
 import {stravaErrorMessage} from "../labels"
-import {Button, Card, Checkbox, Segmented} from "../components/ui"
+import {Button, Card, Checkbox, Segmented, cn} from "../components/ui"
 
 const api = window.walkingBar
 
@@ -41,6 +42,52 @@ function Row({
         )}
       </div>
       <div className="shrink-0">{children}</div>
+    </div>
+  )
+}
+
+const swatchClassName =
+  "h-4 w-4 shrink-0 rounded-full outline-offset-2 outline-black/40 dark:outline-white/60"
+
+function AccentColorPicker({
+  value,
+  onChange,
+}: {
+  value: string
+  onChange: (color: string) => void
+}) {
+  const {t} = useI18n()
+  const isCustom = !ACCENT_COLORS.includes(value)
+  return (
+    <div className="flex items-center gap-1.5">
+      {ACCENT_COLORS.map((color) => (
+        <button
+          key={color}
+          type="button"
+          title={color}
+          aria-pressed={color === value}
+          onClick={() => onChange(color)}
+          className={cn(swatchClassName, color === value && "outline-2")}
+          style={{backgroundColor: color}}
+        />
+      ))}
+      <label
+        title={t("settings.customColor")}
+        className={cn(swatchClassName, "relative", isCustom && "outline-2")}
+        style={{
+          background: isCustom
+            ? value
+            : "conic-gradient(#ff3b30, #ff9500, #ffcc00, #34c759, #007aff, #af52de, #ff3b30)",
+        }}
+      >
+        <input
+          type="color"
+          value={value}
+          aria-label={t("settings.customColor")}
+          onChange={(event) => onChange(event.target.value)}
+          className="absolute inset-0 cursor-pointer opacity-0"
+        />
+      </label>
     </div>
   )
 }
@@ -83,6 +130,12 @@ export function SettingsView({
               </option>
             ))}
           </select>
+        </Row>
+        <Row label={t("settings.accentColor")}>
+          <AccentColorPicker
+            value={settings.accentColor}
+            onChange={(accentColor) => onChange({accentColor})}
+          />
         </Row>
         <Row
           label={t("settings.launchAtLogin")}

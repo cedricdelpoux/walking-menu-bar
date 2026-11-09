@@ -204,6 +204,8 @@ const de: Dictionary = {
     pauseTimeout: "Einheit endet nach",
     pauseTimeoutHint: "Pause, die die Einheit beendet.",
     minutes: "Min.",
+    accentColor: "Akzentfarbe",
+    customColor: "Eigene Farbe",
     launchAtLogin: "Beim Anmelden öffnen",
     launchAtLoginDevHint: "Wirkt nur in der gepackten App.",
     pad: "WalkingPad",

@@ -205,6 +205,8 @@ const en = {
     pauseTimeout: "End session after",
     pauseTimeoutHint: "Pause that ends the session.",
     minutes: "min",
+    accentColor: "Accent color",
+    customColor: "Custom color",
     launchAtLogin: "Open at login",
     launchAtLoginDevHint: "Only takes effect in the packaged app.",
     pad: "WalkingPad",

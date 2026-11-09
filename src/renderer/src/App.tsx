@@ -1,4 +1,4 @@
-import {useLayoutEffect, useRef, useState} from "react"
+import {useEffect, useLayoutEffect, useRef, useState} from "react"
 import {
   ChartColumn,
   ChevronLeft,
@@ -28,6 +28,11 @@ const initialView =
 
 export function App() {
   const [snapshot, updateSettings] = useSettings()
+  const accentColor = snapshot?.settings.accentColor
+  useEffect(() => {
+    if (accentColor)
+      document.documentElement.style.setProperty("--color-accent", accentColor)
+  }, [accentColor])
   const live = useLiveState()
   const [view, setView] = useState<View>(initialView)
   const [publishRequest, setPublishRequest] = useState<

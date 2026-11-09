@@ -202,6 +202,8 @@ const nl: Dictionary = {
     pauseTimeout: "Sessie eindigt na",
     pauseTimeoutHint: "Pauze die de sessie beëindigt.",
     minutes: "min",
+    accentColor: "Accentkleur",
+    customColor: "Eigen kleur",
     launchAtLogin: "Openen bij inloggen",
     launchAtLoginDevHint: "Werkt alleen in de verpakte app.",
     pad: "WalkingPad",

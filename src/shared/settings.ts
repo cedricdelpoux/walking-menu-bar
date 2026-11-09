@@ -12,6 +12,7 @@ export interface StravaSettings {
 
 export interface Settings {
   language: LanguagePreference
+  accentColor: string
   pauseTimeoutMinutes: number
   launchAtLogin: boolean
   speedShortcutsKmh: number[]
@@ -19,8 +20,20 @@ export interface Settings {
   strava: StravaSettings
 }
 
+export const ACCENT_COLORS = [
+  "#10b981",
+  "#007aff",
+  "#5856d6",
+  "#af52de",
+  "#ff2d55",
+  "#ff3b30",
+  "#ff9500",
+  "#8e8e93",
+]
+
 export const DEFAULT_SETTINGS: Settings = {
   language: "system",
+  accentColor: ACCENT_COLORS[0],
   pauseTimeoutMinutes: 5,
   launchAtLogin: false,
   speedShortcutsKmh: [2, 2.5, 3, 3.5, 4],
