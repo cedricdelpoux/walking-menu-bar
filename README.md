@@ -8,13 +8,7 @@ WalkingBar is an unofficial macOS menu bar app for your WalkingPad. It drives a 
 >
 > It has only been tested on a WalkingPad C2 and on Apple Silicon. Other models with the KingSmith Bluetooth service should work, and reports are welcome.
 
-<p>
-  <img src="docs/home.png" alt="The home screen during a walk" width="270">
-  <img src="docs/history.png" alt="The history, with the speed chart of a walk" width="270">
-  <img src="docs/stats.png" alt="The stats of the last 30 days" width="270">
-  <img src="docs/publish.png" alt="Publishing the walks of the day to Strava" width="270">
-  <img src="docs/settings.png" alt="The settings, with the accent color" width="270">
-</p>
+<img src="docs/screens.png" alt="The home, stats, history, publish and settings screens">
 
 ## Features
 
