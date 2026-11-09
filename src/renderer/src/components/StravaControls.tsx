@@ -7,8 +7,6 @@ import {Button, cn} from "./ui"
 
 const api = window.walkingBar
 
-const STRAVA_ORANGE = "#fc4c02"
-
 // The Strava mark, from Simple Icons (CC0).
 export function StravaLogo({className}: {className?: string}) {
   return (
@@ -78,7 +76,7 @@ export function StravaPublicationIcon({
         target="_blank"
         rel="noreferrer"
         title={t("strava.status.published")}
-        style={{color: STRAVA_ORANGE}}
+        className="text-accent"
       >
         <StravaLogo />
       </a>
