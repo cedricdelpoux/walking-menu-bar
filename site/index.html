@@ -43,7 +43,11 @@
             on your Mac and publishes them to Strava.
           </p>
           <div class="actions">
-            <a class="button primary" href="#get-started">Get started</a>
+            <a
+              class="button primary"
+              href="https://github.com/cedricdelpoux/walkingpad-menu-bar/releases/latest"
+              >Download</a
+            >
             <a
               class="button"
               href="https://github.com/cedricdelpoux/walkingpad-menu-bar"
@@ -128,22 +132,34 @@
 
       <section class="start" id="get-started">
         <h2>Get started</h2>
-        <p>
-          WalkingBar is built from source. You need macOS on Apple Silicon, and
-          Node.js 24 with npm 11.
-        </p>
+        <ol>
+          <li>
+            Download the DMG from the
+            <a
+              href="https://github.com/cedricdelpoux/walkingpad-menu-bar/releases/latest"
+              >latest release</a
+            >
+            and drag WalkingBar to Applications.
+          </li>
+          <li>
+            Open it once. The app is not signed with an Apple Developer ID, so
+            macOS blocks it the first time. Open
+            <strong>System Settings › Privacy &amp; Security</strong> and click
+            <strong>Open Anyway</strong>.
+          </li>
+          <li>
+            <a
+              href="https://github.com/cedricdelpoux/walkingpad-menu-bar/blob/main/docs/strava.md#configure-the-strava-application"
+              >Connect your Strava application</a
+            >
+            to publish your walks.
+          </li>
+        </ol>
+        <p>You can also build it from source, with Node.js 24 and npm 11:</p>
         <pre><code>git clone https://github.com/cedricdelpoux/walkingpad-menu-bar.git
 cd walkingpad-menu-bar
 npm install
 npm run dist</code></pre>
-        <p>
-          Open the DMG written to <code>release/</code>, then
-          <a
-            href="https://github.com/cedricdelpoux/walkingpad-menu-bar/blob/main/docs/strava.md#configure-the-strava-application"
-            >connect your Strava application</a
-          >
-          to publish your walks.
-        </p>
         <p class="note">
           It has been tested on a WalkingPad C2. Other KingSmith pads with the
           same Bluetooth service should work, and reports are welcome.

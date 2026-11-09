@@ -247,3 +247,11 @@ footer {
     padding: 0 16px;
   }
 }
+
+ol {
+  padding-left: 22px;
+}
+
+li + li {
+  margin-top: 10px;
+}
