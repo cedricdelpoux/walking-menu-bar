@@ -21,9 +21,17 @@ WalkingBar is an unofficial macOS menu bar app for your WalkingPad. It drives a 
 - Strava publication (manual or automatic)
 - English, French, Spanish, Italian, German and Dutch
 
-## Getting started
+## Install
 
-WalkingBar needs macOS on Apple Silicon, and Node.js 24 with npm 11 to build it.
+WalkingBar needs macOS on Apple Silicon.
+
+1. Download the DMG from the [latest release](https://github.com/cedricdelpoux/walkingpad-menu-bar/releases/latest) and drag WalkingBar to Applications.
+2. Open it once. The app is not signed with an Apple Developer ID, so macOS blocks it the first time. Open **System Settings › Privacy & Security** and click **Open Anyway**.
+3. [Connect your Strava application](docs/strava.md#configure-the-strava-application) to publish your walks.
+
+## Build from source
+
+Building needs Node.js 24 with npm 11.
 
 ```sh
 git clone https://github.com/cedricdelpoux/walkingpad-menu-bar.git
@@ -32,7 +40,7 @@ npm install
 npm run dist
 ```
 
-Open the DMG written to `release/`, then [connect your Strava application](docs/strava.md#configure-the-strava-application) to publish your walks.
+The DMG is written to `release/`. See [Build](docs/build.md) to sign it with a stable local identity.
 
 ## Documentation
 
