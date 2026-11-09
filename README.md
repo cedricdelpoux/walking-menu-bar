@@ -1,12 +1,20 @@
 # WalkingBar
 
+<img src="docs/hero.png" alt="WalkingBar in the macOS menu bar, during a walk">
+
 WalkingBar is an unofficial macOS menu bar app for your WalkingPad. It drives a KingSmith pad over Bluetooth LE, records every session locally and publishes your walks to Strava, one activity per day or per session.
 
 > This project is not affiliated with or endorsed by KingSmith, Xiaomi or Strava. WalkingPad and Strava are trademarks of their respective owners.
 >
 > It has only been tested on a WalkingPad C2 and on Apple Silicon. Other models with the KingSmith Bluetooth service should work, and reports are welcome.
 
-<img src="docs/history.png" alt="The history of the app, with the speed chart of a walk" width="360">
+<p>
+  <img src="docs/home.png" alt="The home screen during a walk" width="270">
+  <img src="docs/history.png" alt="The history, with the speed chart of a walk" width="270">
+  <img src="docs/stats.png" alt="The stats of the last 30 days" width="270">
+  <img src="docs/publish.png" alt="Publishing the walks of the day to Strava" width="270">
+  <img src="docs/settings.png" alt="The settings, with the accent color" width="270">
+</p>
 
 ## Features
 
