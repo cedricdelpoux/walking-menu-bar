@@ -205,7 +205,6 @@ export function PadControls({
               {t("controls.resume")}
             </Button>
             <Button
-              variant="danger"
               className="flex-1 whitespace-nowrap"
               onClick={() => run(api.endSession)}
             >
