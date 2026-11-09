@@ -1,10 +1,10 @@
 {
-  "name": "walkingbar",
+  "name": "walking-menu-bar",
   "version": "0.1.0",
   "description": "Unofficial macOS menu bar app to drive a KingSmith WalkingPad and publish your walks to Strava",
   "author": "Cédric Delpoux",
   "license": "MIT",
-  "repository": "github:cedricdelpoux/walkingbar",
+  "repository": "github:cedricdelpoux/walking-menu-bar",
   "private": true,
   "main": "out/main/index.js",
   "engines": {

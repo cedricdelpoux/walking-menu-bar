@@ -24,8 +24,8 @@ WalkingBar is an unofficial macOS menu bar app for your WalkingPad. It drives a 
 WalkingBar needs macOS on Apple Silicon, and Node.js 24 with npm 11 to build it.
 
 ```sh
-git clone https://github.com/cedricdelpoux/walkingbar.git
-cd walkingbar
+git clone https://github.com/cedricdelpoux/walking-menu-bar.git
+cd walking-menu-bar
 npm install
 npm run dist
 ```
