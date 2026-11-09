@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WalkingBar</title>
+    <meta
+      name="description"
+      content="Drive your WalkingPad from the macOS menu bar and publish your walks to Strava."
+    />
+    <meta property="og:title" content="WalkingBar" />
+    <meta
+      property="og:description"
+      content="Drive your WalkingPad from the macOS menu bar and publish your walks to Strava."
+    />
+    <meta
+      property="og:image"
+      content="https://cedricdelpoux.github.io/walking-menu-bar/hero.png"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="nav">
+      <a class="brand" href="./">
+        <img src="icon.svg" alt="" width="28" height="28" />
+        WalkingBar
+      </a>
+      <a
+        class="nav-link"
+        href="https://github.com/cedricdelpoux/walking-menu-bar"
+        >GitHub</a
+      >
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <h1>Your walking pad, in the menu bar.</h1>
+          <p class="lead">
+            WalkingBar drives your WalkingPad over Bluetooth, keeps every walk
+            on your Mac and publishes them to Strava.
+          </p>
+          <div class="actions">
+            <a class="button primary" href="#get-started">Get started</a>
+            <a
+              class="button"
+              href="https://github.com/cedricdelpoux/walking-menu-bar"
+              >View on GitHub</a
+            >
+          </div>
+          <p class="note">Free and open source, for macOS on Apple Silicon.</p>
+        </div>
+        <div class="hero-shot">
+          <div class="menubar">
+            <span class="tray">1.95 km · 58 min</span>
+          </div>
+          <img
+            class="window"
+            src="home.png"
+            alt="The WalkingBar popover during a walk"
+            width="360"
+            height="594"
+          />
+        </div>
+      </section>
+
+      <section class="features">
+        <h2>Everything a desk walk needs</h2>
+        <div class="grid">
+          <article>
+            <h3>Control from the menu bar</h3>
+            <p>
+              Start, pause and change the speed without leaving what you are
+              working on. The distance and time stay next to the icon.
+            </p>
+          </article>
+          <article>
+            <h3>Speed shortcuts</h3>
+            <p>
+              Pick up to six speeds and switch between them in one click, in
+              manual or automatic mode.
+            </p>
+          </article>
+          <article>
+            <h3>Goals</h3>
+            <p>
+              Set a distance or time goal for the session and the day, and watch
+              how much is left to go.
+            </p>
+          </article>
+          <article>
+            <h3>History and stats</h3>
+            <p>
+              Every session is recorded on your Mac, with its speed chart, and
+              summed up over 7 days, 30 days, 12 months or all time.
+            </p>
+          </article>
+          <article>
+            <h3>Strava publishing</h3>
+            <p>
+              Publish one activity per day or per session, by hand or
+              automatically. A plateau indicator tells you when a speed is held
+              long enough to show on Strava.
+            </p>
+          </article>
+          <article>
+            <h3>Made yours</h3>
+            <p>
+              Choose the accent color and the language: English, French,
+              Spanish, Italian, German or Dutch.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="screens">
+        <h2>Every screen</h2>
+        <img
+          src="screens.png"
+          alt="The home, stats, history, publish and settings screens"
+          width="1272"
+          height="1080"
+          loading="lazy"
+        />
+      </section>
+
+      <section class="start" id="get-started">
+        <h2>Get started</h2>
+        <p>
+          WalkingBar is built from source. You need macOS on Apple Silicon, and
+          Node.js 24 with npm 11.
+        </p>
+        <pre><code>git clone https://github.com/cedricdelpoux/walking-menu-bar.git
+cd walking-menu-bar
+npm install
+npm run dist</code></pre>
+        <p>
+          Open the DMG written to <code>release/</code>, then
+          <a
+            href="https://github.com/cedricdelpoux/walking-menu-bar/blob/main/docs/strava.md#configure-the-strava-application"
+            >connect your Strava application</a
+          >
+          to publish your walks.
+        </p>
+        <p class="note">
+          It has been tested on a WalkingPad C2. Other KingSmith pads with the
+          same Bluetooth service should work, and reports are welcome.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        WalkingBar is not affiliated with or endorsed by KingSmith, Xiaomi or
+        Strava. WalkingPad and Strava are trademarks of their respective owners.
+      </p>
+      <p>
+        <a href="https://github.com/cedricdelpoux/walking-menu-bar">GitHub</a> ·
+        <a
+          href="https://github.com/cedricdelpoux/walking-menu-bar/blob/main/LICENSE"
+          >MIT license</a
+        >
+      </p>
+    </footer>
+  </body>
+</html>
