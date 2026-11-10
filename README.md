@@ -6,7 +6,7 @@ WalkingBar is an unofficial macOS menu bar app for your WalkingPad. It drives a 
 
 > This project is not affiliated with or endorsed by KingSmith, Xiaomi or Strava. WalkingPad and Strava are trademarks of their respective owners.
 >
-> It has only been tested on a WalkingPad C2 and on Apple Silicon. Other models with the KingSmith Bluetooth service should work, and reports are welcome.
+> It has only been tested on a WalkingPad C2 and on Apple Silicon. It speaks both the KingSmith protocol and the standard FTMS one of the newer pads, so other models should work, and reports are welcome.
 
 <img src="docs/screens.png" alt="The home, stats, history, publish and settings screens">
 
