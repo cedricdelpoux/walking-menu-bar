@@ -13,11 +13,12 @@ WalkingBar is an unofficial macOS menu bar app for your WalkingPad. It drives a 
 ## Features
 
 - WalkingPad control from the macOS menu bar
+- Global keyboard shortcuts to start, pause and change the speed
 - Live stats next to the icon
 - Custom speed shortcuts
 - Distance and time goals
-- History with speed charts
-- Walking stats (distance, time, steps)
+- History with speed charts, and CSV export
+- Walking stats (distance, time, steps, calories) and a regularity heatmap
 - Strava publication (manual or automatic)
 - English, French, Spanish, Italian, German and Dutch
 
