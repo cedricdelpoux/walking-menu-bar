@@ -71,6 +71,10 @@ const de: Dictionary = {
     hintDay:
       "Das Laufband stoppt von selbst, sobald die Tagessumme das Ziel erreicht.",
     remaining: (params) => `Noch ${params.value}`,
+    projectedEnd: (params) =>
+      `Bei ${params.speed}: fertig um ${params.time}, in ${params.duration}`,
+    projectedDistance: (params) =>
+      `Bei ${params.speed}: ${params.distance} um ${params.time}`,
     reached: "Ziel erreicht",
     dismiss: "OK",
     invalid: "Gib eine positive Zahl ein.",

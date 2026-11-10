@@ -70,6 +70,10 @@ const nl: Dictionary = {
       "De loopband stopt vanzelf zodra deze sessie het doel bereikt.",
     hintDay: "De loopband stopt vanzelf zodra het dagtotaal het doel bereikt.",
     remaining: (params) => `Nog ${params.value}`,
+    projectedEnd: (params) =>
+      `Op ${params.speed}: klaar om ${params.time}, over ${params.duration}`,
+    projectedDistance: (params) =>
+      `Op ${params.speed}: ${params.distance} om ${params.time}`,
     reached: "Doel bereikt",
     dismiss: "OK",
     invalid: "Voer een positief getal in.",

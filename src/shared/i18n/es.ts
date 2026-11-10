@@ -71,6 +71,10 @@ const es: Dictionary = {
     hintDay:
       "La cinta se detiene sola cuando el total del día alcanza el objetivo.",
     remaining: (params) => `Faltan ${params.value}`,
+    projectedEnd: (params) =>
+      `A ${params.speed}: terminas a las ${params.time}, en ${params.duration}`,
+    projectedDistance: (params) =>
+      `A ${params.speed}: ${params.distance} a las ${params.time}`,
     reached: "Objetivo alcanzado",
     dismiss: "OK",
     invalid: "Introduce un número positivo.",

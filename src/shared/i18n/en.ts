@@ -73,6 +73,13 @@ const en = {
     hintDay:
       "The belt stops on its own once the total of the day reaches the goal.",
     remaining: (params: {value: string}) => `${params.value} to go`,
+    projectedEnd: (params: {speed: string; time: string; duration: string}) =>
+      `At ${params.speed}: done at ${params.time}, in ${params.duration}`,
+    projectedDistance: (params: {
+      speed: string
+      distance: string
+      time: string
+    }) => `At ${params.speed}: ${params.distance} at ${params.time}`,
     reached: "Goal reached",
     dismiss: "OK",
     invalid: "Enter a positive number.",

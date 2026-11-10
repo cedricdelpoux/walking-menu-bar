@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest"
-import {goalPresets, isGoalAhead} from "./goal"
+import {goalPresets, isGoalAhead, projectGoal} from "./goal"
 
 describe("goal presets", () => {
   it("offers the next whole kilometres above the distance walked", () => {
@@ -34,5 +34,35 @@ describe("goal presets", () => {
     expect(isGoalAhead({kind: "duration", targetSeconds: 3000}, walked)).toBe(
       false
     )
+  })
+})
+
+describe("projectGoal", () => {
+  const walked = {walkedMeters: 2270, walkedSeconds: 4092, reachedAt: null}
+
+  it("tells how long the rest of a distance takes at the current speed", () => {
+    const projection = projectGoal(
+      {...walked, goal: {kind: "distance", targetMeters: 2500}},
+      2
+    )
+    expect(projection?.remainingSeconds).toBeCloseTo(414)
+    expect(projection?.distanceAtEndMeters).toBe(2500)
+  })
+
+  it("tells the distance walked when a time goal ends", () => {
+    const projection = projectGoal(
+      {...walked, goal: {kind: "duration", targetSeconds: 4992}},
+      3.6
+    )
+    expect(projection).toEqual({
+      remainingSeconds: 900,
+      distanceAtEndMeters: 3170,
+    })
+  })
+
+  it("has nothing to tell while the belt is stopped", () => {
+    expect(
+      projectGoal({...walked, goal: {kind: "distance", targetMeters: 2500}}, 0)
+    ).toBeNull()
   })
 })

@@ -1,17 +1,25 @@
 import {useState} from "react"
 import {CircleCheck} from "lucide-react"
-import {formatClock, formatDuration, formatKilometers} from "@shared/format"
+import {
+  formatClock,
+  formatDuration,
+  formatKilometers,
+  formatSpeed,
+  formatTimeOfDay,
+} from "@shared/format"
 import {
   goalCompletionRatio,
   goalPresets,
   isGoalAhead,
   isValidGoal,
+  projectGoal,
   type GoalProgress,
   type GoalScope,
   type WalkedTotals,
   type WalkGoal,
   type WalkGoalKind,
 } from "@shared/goal"
+import {useNow} from "../hooks"
 import {useI18n} from "../i18n"
 import {Button, Checkbox, Segmented} from "./ui"
 
@@ -93,7 +101,45 @@ function GoalPicker({scope, walked}: {scope: GoalScope; walked: WalkedTotals}) {
   )
 }
 
-function GoalProgressBar({progress}: {progress: GoalProgress}) {
+const PROJECTION_REFRESH_MS = 10_000
+
+function GoalProjectionLine({
+  progress,
+  speedKmh,
+}: {
+  progress: GoalProgress
+  speedKmh: number
+}) {
+  const {t, locale} = useI18n()
+  const now = useNow(PROJECTION_REFRESH_MS)
+  const projection = projectGoal(progress, speedKmh)
+  if (!projection) return null
+  const speed = formatSpeed(speedKmh, locale)
+  const time = formatTimeOfDay(now + projection.remainingSeconds * 1000, locale)
+  return (
+    <p className="text-[11px] text-black/50 tabular-nums dark:text-white/50">
+      {progress.goal.kind === "distance"
+        ? t("goal.projectedEnd", {
+            speed,
+            time,
+            duration: formatDuration(projection.remainingSeconds),
+          })
+        : t("goal.projectedDistance", {
+            speed,
+            time,
+            distance: formatKilometers(projection.distanceAtEndMeters, locale),
+          })}
+    </p>
+  )
+}
+
+function GoalProgressBar({
+  progress,
+  speedKmh,
+}: {
+  progress: GoalProgress
+  speedKmh: number | null
+}) {
   const {t, locale} = useI18n()
   const {goal} = progress
   const completedPercent = Math.round(goalCompletionRatio(progress) * 100)
@@ -132,6 +178,9 @@ function GoalProgressBar({progress}: {progress: GoalProgress}) {
           style={{width: `${completedPercent}%`}}
         />
       </div>
+      {speedKmh !== null && (
+        <GoalProjectionLine progress={progress} speedKmh={speedKmh} />
+      )}
     </div>
   )
 }
@@ -179,10 +228,12 @@ export function GoalPanel({
   scope,
   progress,
   walked,
+  speedKmh,
 }: {
   scope: GoalScope
   progress: GoalProgress | null
   walked: WalkedTotals
+  speedKmh: number | null
 }) {
   return (
     <div className="mt-3 border-t border-black/5 pt-3 dark:border-white/10">
@@ -191,7 +242,7 @@ export function GoalPanel({
       ) : progress.reachedAt !== null ? (
         <GoalReached scope={scope} />
       ) : (
-        <GoalProgressBar progress={progress} />
+        <GoalProgressBar progress={progress} speedKmh={speedKmh} />
       )}
     </div>
   )

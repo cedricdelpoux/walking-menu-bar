@@ -27,6 +27,13 @@ function AutomaticEndCountdown({endsAt}: {endsAt: number}) {
   )
 }
 
+// The speed the belt is heading to, while it runs.
+function getWalkingSpeed(live: LiveState): number | null {
+  const {status} = live
+  if (status?.beltState !== "running") return null
+  return live.targetSpeedKmh ?? status.speedKmh
+}
+
 export function CurrentSessionCard({live}: {live: LiveState}) {
   const {t, locale} = useI18n()
   const session = live.currentSession
@@ -74,6 +81,7 @@ export function CurrentSessionCard({live}: {live: LiveState}) {
           scope="session"
           progress={live.goals.session}
           walked={session}
+          speedKmh={getWalkingSpeed(live)}
         />
       )}
     </Card>
@@ -128,7 +136,12 @@ export function TodayCard({live}: {live: LiveState}) {
         </div>
       )}
       {dayGoalToggle.isEnabled && (
-        <GoalPanel scope="day" progress={live.goals.day} walked={today} />
+        <GoalPanel
+          scope="day"
+          progress={live.goals.day}
+          walked={today}
+          speedKmh={getWalkingSpeed(live)}
+        />
       )}
     </Card>
   )

@@ -71,6 +71,10 @@ const it: Dictionary = {
     hintDay:
       "Il tapis si ferma da solo quando il totale del giorno raggiunge l'obiettivo.",
     remaining: (params) => `Mancano ${params.value}`,
+    projectedEnd: (params) =>
+      `A ${params.speed}: finisci alle ${params.time}, tra ${params.duration}`,
+    projectedDistance: (params) =>
+      `A ${params.speed}: ${params.distance} alle ${params.time}`,
     reached: "Obiettivo raggiunto",
     dismiss: "OK",
     invalid: "Inserisci un numero positivo.",

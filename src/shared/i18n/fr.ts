@@ -70,6 +70,10 @@ const fr: Dictionary = {
       "Le tapis s'arrête tout seul une fois l'objectif de la séance atteint.",
     hintDay: "Le tapis s'arrête tout seul une fois l'objectif du jour atteint.",
     remaining: (params) => `Encore ${params.value}`,
+    projectedEnd: (params) =>
+      `À ${params.speed} : fin à ${params.time}, dans ${params.duration}`,
+    projectedDistance: (params) =>
+      `À ${params.speed} : ${params.distance} à ${params.time}`,
     reached: "Objectif atteint",
     dismiss: "OK",
     invalid: "Saisis un nombre positif.",

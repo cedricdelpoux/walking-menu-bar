@@ -82,3 +82,37 @@ export function goalCompletionRatio(progress: GoalProgress): number {
       : progress.walkedSeconds / goal.targetSeconds
   return Math.min(1, ratio)
 }
+
+export interface GoalProjection {
+  remainingSeconds: number
+  distanceAtEndMeters: number
+}
+
+// Where the goal ends if the walk keeps the given speed.
+export function projectGoal(
+  progress: GoalProgress,
+  speedKmh: number
+): GoalProjection | null {
+  if (speedKmh <= 0) return null
+  const metersPerSecond = speedKmh / 3.6
+  const {goal} = progress
+  if (goal.kind === "distance") {
+    const remainingMeters = Math.max(
+      0,
+      goal.targetMeters - progress.walkedMeters
+    )
+    return {
+      remainingSeconds: remainingMeters / metersPerSecond,
+      distanceAtEndMeters: goal.targetMeters,
+    }
+  }
+  const remainingSeconds = Math.max(
+    0,
+    goal.targetSeconds - progress.walkedSeconds
+  )
+  return {
+    remainingSeconds,
+    distanceAtEndMeters:
+      progress.walkedMeters + remainingSeconds * metersPerSecond,
+  }
+}
