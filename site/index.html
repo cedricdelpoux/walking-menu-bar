@@ -170,6 +170,11 @@
                     >WalkingPad macOS Client</a
                   >
                 </th>
+                <th scope="col">
+                  <a href="https://github.com/slandau3/z1-walkingpad-mcp"
+                    >Z1 WalkingPad</a
+                  >
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -181,6 +186,7 @@
                 <td>iPhone, iPad</td>
                 <td>Mac menu bar</td>
                 <td>Mac menu bar</td>
+                <td>Mac menu bar</td>
               </tr>
               <tr>
                 <th scope="row">Price</th>
@@ -189,6 +195,7 @@
                 <td>$6.99</td>
                 <td>Subscription</td>
                 <td>$9.99</td>
+                <td>Free</td>
                 <td>Free</td>
               </tr>
               <tr>
@@ -199,6 +206,7 @@
                 <td class="no">—</td>
                 <td class="no">—</td>
                 <td class="yes">✓</td>
+                <td class="yes">✓</td>
               </tr>
               <tr>
                 <th scope="row">No account</th>
@@ -206,6 +214,7 @@
                 <td class="no">—</td>
                 <td class="yes">✓</td>
                 <td class="no">—</td>
+                <td class="yes">✓</td>
                 <td class="yes">✓</td>
                 <td class="yes">✓</td>
               </tr>
@@ -217,9 +226,11 @@
                 <td>WalkingPad</td>
                 <td>C2, A1 Pro, R1 Pro, X21, X25</td>
                 <td>KingSmith</td>
+                <td>Z1</td>
               </tr>
               <tr>
                 <th scope="row">Start, pause and speed</th>
+                <td class="yes">✓</td>
                 <td class="yes">✓</td>
                 <td class="yes">✓</td>
                 <td class="yes">✓</td>
@@ -235,10 +246,12 @@
                 <td class="no">—</td>
                 <td class="no">—</td>
                 <td class="no">—</td>
+                <td class="no">—</td>
               </tr>
               <tr>
                 <th scope="row">Speed presets</th>
                 <td class="yes">✓</td>
+                <td class="no">—</td>
                 <td class="no">—</td>
                 <td class="no">—</td>
                 <td class="no">—</td>
@@ -253,6 +266,7 @@
                 <td class="no">—</td>
                 <td class="no">—</td>
                 <td>With Alfred</td>
+                <td class="no">—</td>
               </tr>
               <tr>
                 <th scope="row">Goals</th>
@@ -262,9 +276,11 @@
                 <td>Steps, distance, calories</td>
                 <td class="no">—</td>
                 <td class="no">—</td>
+                <td class="no">—</td>
               </tr>
               <tr>
                 <th scope="row">History and stats</th>
+                <td class="yes">✓</td>
                 <td class="yes">✓</td>
                 <td class="yes">✓</td>
                 <td class="yes">✓</td>
@@ -280,6 +296,7 @@
                 <td class="no">—</td>
                 <td class="no">—</td>
                 <td class="no">—</td>
+                <td class="no">—</td>
               </tr>
               <tr>
                 <th scope="row">Regularity heatmap</th>
@@ -288,6 +305,7 @@
                 <td class="yes">✓</td>
                 <td class="no">—</td>
                 <td class="yes">✓</td>
+                <td class="no">—</td>
                 <td class="no">—</td>
               </tr>
               <tr>
@@ -298,6 +316,7 @@
                 <td class="yes">✓</td>
                 <td class="no">—</td>
                 <td class="no">—</td>
+                <td class="yes">✓</td>
               </tr>
               <tr>
                 <th scope="row">CSV export</th>
@@ -307,6 +326,7 @@
                 <td class="no">—</td>
                 <td class="no">—</td>
                 <td>With its API</td>
+                <td>JSON</td>
               </tr>
               <tr>
                 <th scope="row">Publishing to Strava</th>
@@ -316,15 +336,17 @@
                 <td class="no">—</td>
                 <td class="no">—</td>
                 <td class="no">—</td>
+                <td>With its CLI</td>
               </tr>
               <tr>
                 <th scope="row">Apple Health</th>
-                <td class="no">—</td>
+                <td>Through Strava</td>
                 <td class="yes">✓</td>
                 <td>With its iPhone app</td>
                 <td class="yes">✓</td>
                 <td class="no">—</td>
                 <td class="no">—</td>
+                <td>Through Strava or a Shortcut</td>
               </tr>
               <tr>
                 <th scope="row">Home Assistant</th>
@@ -334,6 +356,7 @@
                 <td class="no">—</td>
                 <td class="no">—</td>
                 <td class="yes">✓</td>
+                <td class="no">—</td>
               </tr>
             </tbody>
           </table>
@@ -341,8 +364,8 @@
         <p class="note">
           Compared in November 2026 from each app's store page, website or
           README. A dash means the feature is not mentioned there. Apple Health
-          only exists on iPhone and iPad, so a Mac app cannot write to it on its
-          own. Something wrong?
+          only exists on iPhone and iPad: the walks WalkingBar publishes reach
+          it through the Strava iPhone app. Something wrong?
           <a href="https://github.com/cedricdelpoux/walkingpad-menu-bar/issues"
             >Open an issue</a
           >.
