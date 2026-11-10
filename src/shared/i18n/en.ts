@@ -116,6 +116,7 @@ const en = {
     edited: "edited",
     delete: "Delete",
     confirmDelete: "Delete from the app (not from Strava)?",
+    export: "Export as CSV",
     cancel: "Cancel",
   },
   strava: {

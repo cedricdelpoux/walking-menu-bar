@@ -2,6 +2,7 @@ import {useEffect, useLayoutEffect, useRef, useState} from "react"
 import {
   ChartColumn,
   ChevronLeft,
+  Download,
   Footprints,
   History,
   Settings as SettingsIcon,
@@ -194,6 +195,15 @@ function Header({
             <ChevronLeft className="h-4 w-4" />
           </IconButton>
           <h1 className="text-sm font-semibold">{titles[view]}</h1>
+          {view === "history" && (
+            <IconButton
+              label={t("history.export")}
+              onClick={() => void window.walkingBar.exportHistory()}
+              className="ml-auto"
+            >
+              <Download className="h-4 w-4" />
+            </IconButton>
+          )}
         </>
       )}
     </header>

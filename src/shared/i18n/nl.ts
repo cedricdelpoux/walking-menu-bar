@@ -112,6 +112,7 @@ const nl: Dictionary = {
     edited: "bewerkt",
     delete: "Verwijderen",
     confirmDelete: "Uit de app verwijderen (niet uit Strava)?",
+    export: "Exporteren als CSV",
     cancel: "Annuleren",
   },
   strava: {

@@ -113,6 +113,7 @@ const es: Dictionary = {
     edited: "editada",
     delete: "Eliminar",
     confirmDelete: "¿Eliminar de la app (no de Strava)?",
+    export: "Exportar en CSV",
     cancel: "Cancelar",
   },
   strava: {

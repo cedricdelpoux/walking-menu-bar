@@ -1,7 +1,9 @@
 import {writeFileSync} from "node:fs"
 import {join} from "node:path"
-import {app, powerMonitor, safeStorage, shell} from "electron"
+import {app, dialog, powerMonitor, safeStorage, shell} from "electron"
+import {dayKeyOf} from "../shared/day"
 import {formatDuration, formatKilometers} from "../shared/format"
+import {buildHistoryCsv} from "../shared/history-csv"
 import {createTranslator, resolveLocale, type Locale} from "../shared/i18n"
 import {IpcChannel, type LiveState} from "../shared/ipc"
 import type {Settings, SettingsSnapshot} from "../shared/settings"
@@ -190,6 +192,25 @@ function bootstrap(): void {
     },
     stravaAccount,
     publisher,
+    exportHistory: async () => {
+      const {canceled, filePath} = await dialog.showSaveDialog({
+        defaultPath: join(
+          app.getPath("downloads"),
+          `walkingbar-${dayKeyOf(Date.now())}.csv`
+        ),
+        filters: [{name: "CSV", extensions: ["csv"]}],
+      })
+      if (canceled || !filePath) return
+      const allSessions = sessions.listSessionsStartedBetween(
+        0,
+        Number.MAX_SAFE_INTEGER
+      )
+      writeFileSync(
+        filePath,
+        buildHistoryCsv(allSessions, settingsStore.get().weightKg)
+      )
+      shell.showItemInFolder(filePath)
+    },
     revealDiagnosticsLog: () => shell.showItemInFolder(diagnostics.filePath),
     quit,
     fitWindowHeight: (contentHeight) => menuBar.fitHeight(contentHeight),

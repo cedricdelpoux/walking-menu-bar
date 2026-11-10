@@ -60,6 +60,7 @@ export interface WalkingBarApi {
   listHistory(days: number): Promise<DayHistory[]>
   onHistoryChanged(listener: () => void): () => void
   deleteSession(id: number): Promise<void>
+  exportHistory(): Promise<void>
   getSettings(): Promise<SettingsSnapshot>
   updateSettings(patch: SettingsPatch): Promise<SettingsSnapshot>
   onSettingsChanged(listener: (snapshot: SettingsSnapshot) => void): () => void
@@ -100,6 +101,7 @@ export const IpcChannel = {
   listHistory: "history:list",
   historyChanged: "history:changed",
   deleteSession: "session:delete",
+  exportHistory: "history:export",
   getSettings: "settings:get",
   updateSettings: "settings:update",
   settingsChanged: "settings:changed",

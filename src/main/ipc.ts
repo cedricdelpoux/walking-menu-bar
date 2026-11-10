@@ -33,6 +33,7 @@ export interface IpcDependencies {
   updateSettings: (patch: SettingsPatch) => SettingsSnapshot
   stravaAccount: StravaAccount
   publisher: ActivityPublisher
+  exportHistory: () => Promise<void>
   revealDiagnosticsLog: () => void
   quit: () => void
   fitWindowHeight: (contentHeight: number) => void
@@ -128,6 +129,7 @@ export function registerIpcHandlers(dependencies: IpcDependencies): void {
     sessions.deleteSession(id)
     padService.emit("historyChanged")
   })
+  ipcMain.handle(IpcChannel.exportHistory, () => dependencies.exportHistory())
 
   ipcMain.handle(IpcChannel.getSettings, () => dependencies.getSettings())
   ipcMain.handle(IpcChannel.updateSettings, (_event, patch: SettingsPatch) =>

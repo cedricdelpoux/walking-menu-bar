@@ -27,6 +27,7 @@ const api: WalkingBarApi = {
   onHistoryChanged: (listener) =>
     subscribe(IpcChannel.historyChanged, listener),
   deleteSession: (id) => ipcRenderer.invoke(IpcChannel.deleteSession, id),
+  exportHistory: () => ipcRenderer.invoke(IpcChannel.exportHistory),
   getSettings: () => ipcRenderer.invoke(IpcChannel.getSettings),
   updateSettings: (patch) =>
     ipcRenderer.invoke(IpcChannel.updateSettings, patch),
