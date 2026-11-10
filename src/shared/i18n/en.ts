@@ -88,6 +88,7 @@ const en = {
     calories: "Calories",
     activeDays: "Days",
     bestDay: (params: {distance: string}) => `Best day: ${params.distance}`,
+    lastMonths: "Last 6 months",
     period: {
       week: "7 days",
       month: "30 days",

@@ -86,6 +86,7 @@ const es: Dictionary = {
     calories: "Calorías",
     activeDays: "Días",
     bestDay: (params) => `Mejor día: ${params.distance}`,
+    lastMonths: "Últimos 6 meses",
     period: {
       week: "7 días",
       month: "30 días",

@@ -17,6 +17,7 @@ import {
 } from "@shared/stats"
 import {useCalories} from "../calories"
 import {useHistory} from "../hooks"
+import {ActivityHeatmap} from "../components/ActivityHeatmap"
 import {Card, Segmented, Stat, cn} from "../components/ui"
 import {useI18n} from "../i18n"
 
@@ -175,45 +176,50 @@ export function StatsView() {
   }
 
   return (
-    <Card>
-      <Segmented<StatsPeriod>
-        value={period}
-        onChange={setPeriod}
-        options={STATS_PERIODS.map((value) => ({
-          value,
-          label: t(`stats.period.${value}`),
-        }))}
-      />
-      <DistanceBars bars={stats.bars} barSize={stats.barSize} />
-      <div className="mt-2 grid grid-cols-4 gap-2">
-        <Stat
-          label="km"
-          value={formatKilometerValue(stats.distanceMeters, locale, 1)}
+    <>
+      <Card>
+        <Segmented<StatsPeriod>
+          value={period}
+          onChange={setPeriod}
+          options={STATS_PERIODS.map((value) => ({
+            value,
+            label: t(`stats.period.${value}`),
+          }))}
         />
-        <Stat
-          label={t("stats.duration")}
-          value={formatDuration(stats.durationSeconds)}
-        />
-        <Stat
-          label={t("stats.steps")}
-          value={formatNumber(stats.steps, locale)}
-        />
-        <Stat label={t("stats.activeDays")} value={stats.activeDays} />
-      </div>
-      {stats.bestDayMeters > 0 && (
-        <p className="mt-2 flex justify-between text-[11px] text-black/50 dark:text-white/50">
-          <span>
-            {t("stats.bestDay", {
-              distance: formatKilometers(stats.bestDayMeters, locale),
-            })}
-          </span>
-          {calories !== null && (
-            <span title={t("stats.calories")}>
-              ≈ {formatCalories(calories, locale)}
+        <DistanceBars bars={stats.bars} barSize={stats.barSize} />
+        <div className="mt-2 grid grid-cols-4 gap-2">
+          <Stat
+            label="km"
+            value={formatKilometerValue(stats.distanceMeters, locale, 1)}
+          />
+          <Stat
+            label={t("stats.duration")}
+            value={formatDuration(stats.durationSeconds)}
+          />
+          <Stat
+            label={t("stats.steps")}
+            value={formatNumber(stats.steps, locale)}
+          />
+          <Stat label={t("stats.activeDays")} value={stats.activeDays} />
+        </div>
+        {stats.bestDayMeters > 0 && (
+          <p className="mt-2 flex justify-between text-[11px] text-black/50 dark:text-white/50">
+            <span>
+              {t("stats.bestDay", {
+                distance: formatKilometers(stats.bestDayMeters, locale),
+              })}
             </span>
-          )}
-        </p>
-      )}
-    </Card>
+            {calories !== null && (
+              <span title={t("stats.calories")}>
+                ≈ {formatCalories(calories, locale)}
+              </span>
+            )}
+          </p>
+        )}
+      </Card>
+      <Card title={t("stats.lastMonths")}>
+        <ActivityHeatmap history={history} />
+      </Card>
+    </>
   )
 }

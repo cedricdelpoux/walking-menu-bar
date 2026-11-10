@@ -85,6 +85,7 @@ const nl: Dictionary = {
     calories: "Calorieën",
     activeDays: "Dagen",
     bestDay: (params) => `Beste dag: ${params.distance}`,
+    lastMonths: "Laatste 6 maanden",
     period: {
       week: "7 dagen",
       month: "30 dagen",
