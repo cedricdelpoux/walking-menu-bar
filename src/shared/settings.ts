@@ -10,6 +10,13 @@ export interface StravaSettings {
   hideFromHome: boolean
 }
 
+export const SHORTCUT_ACTIONS = ["toggleBelt", "faster", "slower"] as const
+
+export type ShortcutAction = (typeof SHORTCUT_ACTIONS)[number]
+
+// Electron accelerators, such as "Control+Alt+Space"; an empty one is turned off.
+export type Shortcuts = Record<ShortcutAction, string>
+
 export interface Settings {
   language: LanguagePreference
   accentColor: string
@@ -18,6 +25,7 @@ export interface Settings {
   launchAtLogin: boolean
   speedShortcutsKmh: number[]
   showPlateauIndicator: boolean
+  shortcuts: Shortcuts
   strava: StravaSettings
 }
 
@@ -40,6 +48,7 @@ export const DEFAULT_SETTINGS: Settings = {
   launchAtLogin: false,
   speedShortcutsKmh: [2, 2.5, 3, 3.5, 4],
   showPlateauIndicator: true,
+  shortcuts: {toggleBelt: "", faster: "", slower: ""},
   strava: {
     grouping: "day",
     autoPublish: true,
@@ -74,8 +83,10 @@ export const TITLE_TEMPLATE_TOKENS = [
 export interface SettingsSnapshot {
   settings: Settings
   locale: Locale
+  unavailableShortcuts: ShortcutAction[]
 }
 
-export type SettingsPatch = Partial<Omit<Settings, "strava">> & {
+export type SettingsPatch = Partial<Omit<Settings, "shortcuts" | "strava">> & {
+  shortcuts?: Partial<Shortcuts>
   strava?: Partial<StravaSettings>
 }

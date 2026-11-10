@@ -222,6 +222,12 @@ const en = {
       `Up to ${params.max}, shown under the speed.`,
     showDiagnosticsLog: "Show the diagnostics log",
     forgetPad: "Forget this pad",
+    shortcuts: "Keyboard shortcuts",
+    shortcutsHint: "They work from any app. Click one, then type the new keys.",
+    shortcutToggleBelt: "Start or pause",
+    shortcutRecording: "Type the keys…",
+    shortcutNone: "None",
+    shortcutUnavailable: "Already used by another app.",
     version: (params: {version: string}) => `Version ${params.version}`,
   },
 }

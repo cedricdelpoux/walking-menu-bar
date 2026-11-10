@@ -221,6 +221,13 @@ const de: Dictionary = {
       `Bis zu ${params.max}, unter dem Tempo angezeigt.`,
     showDiagnosticsLog: "Diagnoseprotokoll anzeigen",
     forgetPad: "Laufband vergessen",
+    shortcuts: "Tastenkürzel",
+    shortcutsHint:
+      "Sie funktionieren in jeder App. Klicke auf eines und drücke die neuen Tasten.",
+    shortcutToggleBelt: "Starten oder pausieren",
+    shortcutRecording: "Tasten drücken…",
+    shortcutNone: "Keins",
+    shortcutUnavailable: "Wird schon von einer anderen App genutzt.",
     version: (params) => `Version ${params.version}`,
   },
 }

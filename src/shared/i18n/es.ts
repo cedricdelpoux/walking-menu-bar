@@ -220,6 +220,13 @@ const es: Dictionary = {
     speedShortcutsHint: (params) => `Hasta ${params.max}, bajo la velocidad.`,
     showDiagnosticsLog: "Ver el diagnóstico",
     forgetPad: "Olvidar esta cinta",
+    shortcuts: "Atajos de teclado",
+    shortcutsHint:
+      "Funcionan desde cualquier app. Haz clic en uno y pulsa las nuevas teclas.",
+    shortcutToggleBelt: "Iniciar o pausar",
+    shortcutRecording: "Pulsa las teclas…",
+    shortcutNone: "Ninguno",
+    shortcutUnavailable: "Ya lo usa otra app.",
     version: (params) => `Versión ${params.version}`,
   },
 }

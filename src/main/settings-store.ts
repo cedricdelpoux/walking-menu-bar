@@ -3,8 +3,10 @@ import {
   DEFAULT_SETTINGS,
   PAUSE_TIMEOUT_RANGE_MINUTES,
   sanitizeSpeedShortcuts,
+  SHORTCUT_ACTIONS,
   type Settings,
   type SettingsPatch,
+  type Shortcuts,
   type StravaSettings,
 } from "../shared/settings"
 import {WEIGHT_RANGE_KG} from "../shared/calories"
@@ -30,6 +32,20 @@ function sanitizeWeight(weightKg: unknown): number | null {
   const number = Number(weightKg)
   if (weightKg === null || !Number.isFinite(number) || number <= 0) return null
   return Math.round(clamp(number, WEIGHT_RANGE_KG.min, WEIGHT_RANGE_KG.max, 0))
+}
+
+const ACCELERATOR = /^[A-Za-z0-9+]{0,60}$/
+
+function sanitizeShortcuts(shortcuts: Shortcuts): Shortcuts {
+  return Object.fromEntries(
+    SHORTCUT_ACTIONS.map((action) => [
+      action,
+      typeof shortcuts[action] === "string" &&
+      ACCELERATOR.test(shortcuts[action])
+        ? shortcuts[action]
+        : DEFAULT_SETTINGS.shortcuts[action],
+    ])
+  ) as Shortcuts
 }
 
 function sanitizeStrava(strava: StravaSettings): StravaSettings {
@@ -66,12 +82,18 @@ function sanitize(settings: Settings): Settings {
     ),
     speedShortcutsKmh: sanitizeSpeedShortcuts(settings.speedShortcutsKmh),
     showPlateauIndicator: settings.showPlateauIndicator !== false,
+    shortcuts: sanitizeShortcuts(settings.shortcuts),
     strava: sanitizeStrava(settings.strava),
   }
 }
 
 function merge(base: Settings, patch: SettingsPatch): Settings {
-  return {...base, ...patch, strava: {...base.strava, ...patch.strava}}
+  return {
+    ...base,
+    ...patch,
+    shortcuts: {...base.shortcuts, ...patch.shortcuts},
+    strava: {...base.strava, ...patch.strava},
+  }
 }
 
 export class SettingsStore extends EventEmitter<{change: [Settings]}> {

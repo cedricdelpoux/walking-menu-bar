@@ -1,12 +1,24 @@
 import {writeFileSync} from "node:fs"
 import {join} from "node:path"
-import {app, dialog, powerMonitor, safeStorage, shell} from "electron"
+import {
+  app,
+  dialog,
+  globalShortcut,
+  powerMonitor,
+  safeStorage,
+  shell,
+} from "electron"
 import {dayKeyOf} from "../shared/day"
 import {formatDuration, formatKilometers} from "../shared/format"
 import {buildHistoryCsv} from "../shared/history-csv"
 import {createTranslator, resolveLocale, type Locale} from "../shared/i18n"
 import {IpcChannel, type LiveState} from "../shared/ipc"
-import type {Settings, SettingsSnapshot} from "../shared/settings"
+import {
+  SHORTCUT_ACTIONS,
+  type Settings,
+  type SettingsSnapshot,
+  type ShortcutAction,
+} from "../shared/settings"
 import type {StravaCredentials} from "../shared/strava"
 import {DiagnosticLog} from "./diagnostics/diagnostic-log"
 import {broadcast, registerIpcHandlers} from "./ipc"
@@ -48,6 +60,14 @@ function getBuiltInCredentials(): StravaCredentials | null {
   return clientId && clientSecret ? {clientId, clientSecret} : null
 }
 
+function registerShortcut(accelerator: string, action: () => void): boolean {
+  try {
+    return globalShortcut.register(accelerator, action)
+  } catch {
+    return false
+  }
+}
+
 function bootstrap(): void {
   app.dock?.hide()
 
@@ -61,9 +81,11 @@ function bootstrap(): void {
       settingsStore.get().language,
       app.getPreferredSystemLanguages()
     )
+  let unavailableShortcuts: ShortcutAction[] = []
   const settingsSnapshot = (): SettingsSnapshot => ({
     settings: settingsStore.get(),
     locale: currentLocale(),
+    unavailableShortcuts,
   })
 
   const recorder = new SessionRecorder(sessions, appState, {
@@ -156,9 +178,28 @@ function bootstrap(): void {
   }
   applyLoginItem(settingsStore.get())
 
+  const shortcutActions: Record<ShortcutAction, () => Promise<void>> = {
+    toggleBelt: () => padService.toggleBelt(),
+    faster: () => padService.changeSpeed(1),
+    slower: () => padService.changeSpeed(-1),
+  }
+  const applyShortcuts = ({shortcuts}: Settings) => {
+    globalShortcut.unregisterAll()
+    unavailableShortcuts = SHORTCUT_ACTIONS.filter(
+      (action) =>
+        shortcuts[action] !== "" &&
+        !registerShortcut(
+          shortcuts[action],
+          () => void shortcutActions[action]()
+        )
+    )
+  }
+  applyShortcuts(settingsStore.get())
+
   settingsStore.on("change", (settings) => {
     padService.setPauseTimeout(settings.pauseTimeoutMinutes)
     applyLoginItem(settings)
+    applyShortcuts(settings)
     menuBar.updateLabels(menuLabels())
     menuBar.setTitle(trayTitle(padService.getLiveState(), currentLocale()))
     broadcast(webContents, IpcChannel.settingsChanged, settingsSnapshot())

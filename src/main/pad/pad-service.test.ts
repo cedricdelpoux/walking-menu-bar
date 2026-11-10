@@ -385,6 +385,16 @@ describe("PadService preferred mode", () => {
     expect(service.getLiveState().startRequest).toBeNull()
   })
 
+  it("starts or pauses the belt with one toggle", async () => {
+    const service = createService()
+    receive(IDLE_IN_AUTOMATIC)
+    await service.toggleBelt()
+    receive(RUNNING_IN_MANUAL)
+    await service.toggleBelt()
+    expect(sentCommandTypes()).toContain("start")
+    expect(sentCommandTypes().at(-1)).toBe("stop")
+  })
+
   it("cancels a pending start when asked to stop", async () => {
     const service = createService()
     receive(ASLEEP)

@@ -219,6 +219,13 @@ const nl: Dictionary = {
       `Maximaal ${params.max}, onder de snelheid.`,
     showDiagnosticsLog: "Diagnoselogboek tonen",
     forgetPad: "Deze loopband vergeten",
+    shortcuts: "Sneltoetsen",
+    shortcutsHint:
+      "Ze werken vanuit elke app. Klik erop en druk op de nieuwe toetsen.",
+    shortcutToggleBelt: "Starten of pauzeren",
+    shortcutRecording: "Druk op de toetsen…",
+    shortcutNone: "Geen",
+    shortcutUnavailable: "Al in gebruik door een andere app.",
     version: (params) => `Versie ${params.version}`,
   },
 }

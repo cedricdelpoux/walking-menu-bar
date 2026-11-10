@@ -218,6 +218,13 @@ const fr: Dictionary = {
       `Jusqu'à ${params.max}, affichés sous la vitesse.`,
     showDiagnosticsLog: "Afficher le journal de diagnostic",
     forgetPad: "Oublier ce tapis",
+    shortcuts: "Raccourcis clavier",
+    shortcutsHint:
+      "Ils marchent depuis n'importe quelle app. Clique sur l'un d'eux, puis tape les nouvelles touches.",
+    shortcutToggleBelt: "Démarrer ou mettre en pause",
+    shortcutRecording: "Tape les touches…",
+    shortcutNone: "Aucun",
+    shortcutUnavailable: "Déjà utilisé par une autre app.",
     version: (params) => `Version ${params.version}`,
   },
 }

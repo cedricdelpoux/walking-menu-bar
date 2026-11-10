@@ -238,6 +238,14 @@ export class PadService extends EventEmitter<PadServiceEvents> {
     return this.stopBelt("pauseRequest")
   }
 
+  // Does what the main button of the popover does at that moment.
+  async toggleBelt(): Promise<void> {
+    const {connection, status, startRequest, isStopping} = this.getLiveState()
+    if (connection.kind !== "connected" || !status) return
+    if (isBeltMoving(status)) await this.pauseBelt()
+    else if (startRequest !== "pending" && !isStopping) await this.startBelt()
+  }
+
   // Ending while the belt still runs would let the next "running" status open a new session.
   async endSession(): Promise<void> {
     if (isBeltMoving(this.status) || this.pendingStart) {

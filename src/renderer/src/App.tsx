@@ -91,6 +91,7 @@ export function App() {
               {view === "settings" && (
                 <SettingsView
                   settings={snapshot.settings}
+                  unavailableShortcuts={snapshot.unavailableShortcuts}
                   onChange={updateSettings}
                   live={live}
                 />

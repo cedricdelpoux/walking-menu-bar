@@ -1,4 +1,4 @@
-import {useEffect, useState, type ReactNode} from "react"
+import {useEffect, useState, type KeyboardEvent, type ReactNode} from "react"
 import {Power} from "lucide-react"
 import {WEIGHT_RANGE_KG} from "@shared/calories"
 import {formatNumber} from "@shared/format"
@@ -11,10 +11,14 @@ import {
   ACCENT_COLORS,
   MAX_SPEED_SHORTCUTS,
   PAUSE_TIMEOUT_RANGE_MINUTES,
+  SHORTCUT_ACTIONS,
   type Settings,
   type SettingsPatch,
+  type ShortcutAction,
+  type Shortcuts,
   type StravaSettings,
 } from "@shared/settings"
+import {formatAccelerator, toAccelerator} from "../accelerator"
 import {useAppInfo, useStravaState} from "../hooks"
 import {ConnectStravaButton} from "../components/StravaControls"
 import {useI18n} from "../i18n"
@@ -101,10 +105,12 @@ const inputClassName =
 
 export function SettingsView({
   settings,
+  unavailableShortcuts,
   onChange,
   live,
 }: {
   settings: Settings
+  unavailableShortcuts: ShortcutAction[]
   onChange: (patch: SettingsPatch) => void
   live: LiveState | null
 }) {
@@ -196,6 +202,12 @@ export function SettingsView({
         />
       </Card>
 
+      <ShortcutsCard
+        shortcuts={settings.shortcuts}
+        unavailableShortcuts={unavailableShortcuts}
+        onChange={(shortcuts) => onChange({shortcuts})}
+      />
+
       <StravaSettingsCard
         settings={settings.strava}
         onChange={(strava) => onChange({strava})}
@@ -274,6 +286,90 @@ function SpeedShortcutsSetting({
         })}
       </div>
     </div>
+  )
+}
+
+function ShortcutsCard({
+  shortcuts,
+  unavailableShortcuts,
+  onChange,
+}: {
+  shortcuts: Shortcuts
+  unavailableShortcuts: ShortcutAction[]
+  onChange: (patch: Partial<Shortcuts>) => void
+}) {
+  const {t} = useI18n()
+  const labels: Record<ShortcutAction, string> = {
+    toggleBelt: t("settings.shortcutToggleBelt"),
+    faster: t("controls.faster"),
+    slower: t("controls.slower"),
+  }
+  return (
+    <Card title={t("settings.shortcuts")}>
+      <div className="text-[11px] text-black/50 dark:text-white/50">
+        {t("settings.shortcutsHint")}
+      </div>
+      {SHORTCUT_ACTIONS.map((action) => (
+        <ShortcutRow
+          key={action}
+          label={labels[action]}
+          accelerator={shortcuts[action]}
+          isUnavailable={unavailableShortcuts.includes(action)}
+          onChange={(accelerator) => onChange({[action]: accelerator})}
+        />
+      ))}
+    </Card>
+  )
+}
+
+function ShortcutRow({
+  label,
+  accelerator,
+  isUnavailable,
+  onChange,
+}: {
+  label: string
+  accelerator: string
+  isUnavailable: boolean
+  onChange: (accelerator: string) => void
+}) {
+  const {t} = useI18n()
+  const [isRecording, setIsRecording] = useState(false)
+
+  const record = (event: KeyboardEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+    if (event.key === "Escape") return setIsRecording(false)
+    const isClearing = event.key === "Backspace" || event.key === "Delete"
+    const recorded = isClearing ? "" : toAccelerator(event.nativeEvent)
+    if (recorded === null) return
+    onChange(recorded)
+    setIsRecording(false)
+  }
+
+  return (
+    <Row
+      label={label}
+      hint={isUnavailable ? t("settings.shortcutUnavailable") : undefined}
+    >
+      <button
+        type="button"
+        onClick={() => setIsRecording(true)}
+        onBlur={() => setIsRecording(false)}
+        onKeyDown={isRecording ? record : undefined}
+        className={cn(
+          inputClassName,
+          "min-w-24 text-center",
+          isRecording && "border-accent text-black/50 dark:text-white/50",
+          isUnavailable && !isRecording && "text-rose-500 line-through"
+        )}
+      >
+        {isRecording
+          ? t("settings.shortcutRecording")
+          : accelerator
+            ? formatAccelerator(accelerator)
+            : t("settings.shortcutNone")}
+      </button>
+    </Row>
   )
 }
 
