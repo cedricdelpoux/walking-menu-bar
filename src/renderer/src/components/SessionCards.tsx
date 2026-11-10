@@ -1,5 +1,6 @@
 import {averageSpeedKmh} from "@shared/session"
 import {
+  formatCalories,
   formatClock,
   formatDuration,
   formatKilometers,
@@ -7,10 +8,11 @@ import {
   formatSpeed,
 } from "@shared/format"
 import type {LiveState} from "@shared/ipc"
+import {useCalories} from "../calories"
 import {useNow} from "../hooks"
 import {GoalPanel, GoalToggle, useGoalToggle} from "./GoalSection"
 import {useI18n} from "../i18n"
-import {Card, Stat} from "./ui"
+import {Card, Stat, cn} from "./ui"
 
 const COUNTDOWN_REFRESH_MS = 1000
 
@@ -82,6 +84,7 @@ export function TodayCard({live}: {live: LiveState}) {
   const {t, locale} = useI18n()
   const {today} = live
   const dayGoalToggle = useGoalToggle("day", live.goals.day)
+  const calories = useCalories(today)
   return (
     <Card title={t("today.title")} aside={<GoalToggle {...dayGoalToggle} />}>
       {today.sessionCount === 0 ? (
@@ -89,7 +92,12 @@ export function TodayCard({live}: {live: LiveState}) {
           {t("today.empty")}
         </p>
       ) : (
-        <div className="grid grid-cols-3 gap-x-2 gap-y-3">
+        <div
+          className={cn(
+            "grid gap-x-2 gap-y-3",
+            calories === null ? "grid-cols-3" : "grid-cols-4"
+          )}
+        >
           <Stat
             label={t("stats.distance")}
             value={formatKilometers(today.distanceMeters, locale)}
@@ -102,6 +110,12 @@ export function TodayCard({live}: {live: LiveState}) {
             label={t("stats.steps")}
             value={formatNumber(today.steps, locale)}
           />
+          {calories !== null && (
+            <Stat
+              label={t("stats.calories")}
+              value={formatCalories(calories, locale)}
+            />
+          )}
           <Stat label={t("stats.sessions")} value={today.sessionCount} />
           <Stat
             label={t("stats.averageSpeed")}

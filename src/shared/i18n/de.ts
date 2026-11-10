@@ -83,6 +83,7 @@ const de: Dictionary = {
     averageSpeed: "Ø Tempo",
     maxSpeed: "Max. Tempo",
     sessions: "Einheiten",
+    calories: "Kalorien",
     activeDays: "Tage",
     bestDay: (params) => `Bester Tag: ${params.distance}`,
     period: {
@@ -205,6 +206,8 @@ const de: Dictionary = {
     pauseTimeoutHint: "Pause, die die Einheit beendet.",
     minutes: "Min.",
     accentColor: "Akzentfarbe",
+    weight: "Gewicht",
+    weightHint: "Dient zur Schätzung der verbrauchten Kalorien.",
     customColor: "Eigene Farbe",
     launchAtLogin: "Beim Anmelden öffnen",
     launchAtLoginDevHint: "Wirkt nur in der gepackten App.",

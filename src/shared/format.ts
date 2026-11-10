@@ -31,6 +31,10 @@ export function formatKilometers(
   return `${formatKilometerValue(meters, locale, fractionDigits)} km`
 }
 
+export function formatCalories(kilocalories: number, locale: Locale): string {
+  return `${formatNumber(kilocalories, locale)} kcal`
+}
+
 export function formatSpeed(kmh: number, locale: Locale): string {
   return `${formatNumber(kmh, locale, 1)} km/h`
 }

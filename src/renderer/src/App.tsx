@@ -13,6 +13,7 @@ import {PadControls} from "./components/PadControls"
 import {CurrentSessionCard, TodayCard} from "./components/SessionCards"
 import {IconButton} from "./components/ui"
 import {useLiveState, useSettings} from "./hooks"
+import {WeightContext} from "./calories"
 import {I18nProvider, useI18n} from "./i18n"
 import {dayLabel} from "./labels"
 import {HistoryView, type PublishRequest} from "./views/HistoryView"
@@ -52,49 +53,51 @@ export function App() {
 
   return (
     <I18nProvider locale={snapshot.locale}>
-      <div className="flex max-h-full flex-col">
-        <Header
-          headerRef={headerRef}
-          view={view}
-          onNavigate={(next) =>
-            view === "publish" && next === "home"
-              ? closePublish()
-              : setView(next)
-          }
-          live={live}
-          publishRequest={publishRequest}
-        />
-        <main
-          ref={mainRef}
-          className="min-h-0 flex-1 overflow-y-auto px-3 pb-3"
-        >
-          <div ref={contentRef} className="space-y-3">
-            {view === "home" && live && (
-              <HomeView
-                live={live}
-                speedShortcutsKmh={snapshot.settings.speedShortcutsKmh}
-                showPlateauIndicator={snapshot.settings.showPlateauIndicator}
-              />
-            )}
-            {view === "history" && <HistoryView onPublish={openPublish} />}
-            {view === "stats" && <StatsView />}
-            {view === "publish" && publishRequest && (
-              <PublishView
-                target={publishRequest.target}
-                walksOnStrava={publishRequest.walks}
-                onDone={closePublish}
-              />
-            )}
-            {view === "settings" && (
-              <SettingsView
-                settings={snapshot.settings}
-                onChange={updateSettings}
-                live={live}
-              />
-            )}
-          </div>
-        </main>
-      </div>
+      <WeightContext.Provider value={snapshot.settings.weightKg}>
+        <div className="flex max-h-full flex-col">
+          <Header
+            headerRef={headerRef}
+            view={view}
+            onNavigate={(next) =>
+              view === "publish" && next === "home"
+                ? closePublish()
+                : setView(next)
+            }
+            live={live}
+            publishRequest={publishRequest}
+          />
+          <main
+            ref={mainRef}
+            className="min-h-0 flex-1 overflow-y-auto px-3 pb-3"
+          >
+            <div ref={contentRef} className="space-y-3">
+              {view === "home" && live && (
+                <HomeView
+                  live={live}
+                  speedShortcutsKmh={snapshot.settings.speedShortcutsKmh}
+                  showPlateauIndicator={snapshot.settings.showPlateauIndicator}
+                />
+              )}
+              {view === "history" && <HistoryView onPublish={openPublish} />}
+              {view === "stats" && <StatsView />}
+              {view === "publish" && publishRequest && (
+                <PublishView
+                  target={publishRequest.target}
+                  walksOnStrava={publishRequest.walks}
+                  onDone={closePublish}
+                />
+              )}
+              {view === "settings" && (
+                <SettingsView
+                  settings={snapshot.settings}
+                  onChange={updateSettings}
+                  live={live}
+                />
+              )}
+            </div>
+          </main>
+        </div>
+      </WeightContext.Provider>
     </I18nProvider>
   )
 }

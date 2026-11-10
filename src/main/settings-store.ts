@@ -7,6 +7,7 @@ import {
   type SettingsPatch,
   type StravaSettings,
 } from "../shared/settings"
+import {WEIGHT_RANGE_KG} from "../shared/calories"
 import type {AppStateRepository} from "./storage/app-state-repository"
 
 const SETTINGS_KEY = "settings"
@@ -23,6 +24,12 @@ function clamp(
   return Number.isFinite(number)
     ? Math.min(max, Math.max(min, number))
     : fallback
+}
+
+function sanitizeWeight(weightKg: unknown): number | null {
+  const number = Number(weightKg)
+  if (weightKg === null || !Number.isFinite(number) || number <= 0) return null
+  return Math.round(clamp(number, WEIGHT_RANGE_KG.min, WEIGHT_RANGE_KG.max, 0))
 }
 
 function sanitizeStrava(strava: StravaSettings): StravaSettings {
@@ -48,6 +55,7 @@ function sanitize(settings: Settings): Settings {
     accentColor: HEX_COLOR.test(settings.accentColor)
       ? settings.accentColor.toLowerCase()
       : DEFAULT_SETTINGS.accentColor,
+    weightKg: sanitizeWeight(settings.weightKg),
     pauseTimeoutMinutes: Math.round(
       clamp(
         settings.pauseTimeoutMinutes,

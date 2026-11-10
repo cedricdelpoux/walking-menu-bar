@@ -83,6 +83,7 @@ const es: Dictionary = {
     averageSpeed: "Vel. media",
     maxSpeed: "Vel. máxima",
     sessions: "Sesiones",
+    calories: "Calorías",
     activeDays: "Días",
     bestDay: (params) => `Mejor día: ${params.distance}`,
     period: {
@@ -204,6 +205,8 @@ const es: Dictionary = {
     pauseTimeoutHint: "Pausa que termina la sesión.",
     minutes: "min",
     accentColor: "Color",
+    weight: "Peso",
+    weightHint: "Sirve para estimar las calorías quemadas.",
     customColor: "Color personalizado",
     launchAtLogin: "Abrir al iniciar sesión",
     launchAtLoginDevHint: "Solo funciona en la app empaquetada.",

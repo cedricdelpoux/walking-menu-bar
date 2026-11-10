@@ -85,6 +85,7 @@ const en = {
     averageSpeed: "Avg speed",
     maxSpeed: "Max speed",
     sessions: "Sessions",
+    calories: "Calories",
     activeDays: "Days",
     bestDay: (params: {distance: string}) => `Best day: ${params.distance}`,
     period: {
@@ -206,6 +207,8 @@ const en = {
     pauseTimeoutHint: "Pause that ends the session.",
     minutes: "min",
     accentColor: "Accent color",
+    weight: "Weight",
+    weightHint: "Used to estimate the calories burned.",
     customColor: "Custom color",
     launchAtLogin: "Open at login",
     launchAtLoginDevHint: "Only takes effect in the packaged app.",

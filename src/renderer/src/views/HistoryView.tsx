@@ -2,6 +2,7 @@ import {useEffect, useState} from "react"
 import {Loader2, Trash2} from "lucide-react"
 import type {DayHistory} from "@shared/day"
 import {
+  formatCalories,
   formatClock,
   formatDuration,
   formatKilometers,
@@ -23,6 +24,7 @@ import {
   useStravaState,
 } from "../hooks"
 import type {Locale, Translate} from "@shared/i18n"
+import {useCalories} from "../calories"
 import {useI18n} from "../i18n"
 import {shortDayLabel} from "../labels"
 import {SpeedProfileChart} from "../components/SpeedProfileChart"
@@ -287,8 +289,19 @@ function WalkSummary({sessions}: {sessions: SessionRecord[]}) {
     <span className="text-xs text-black/50 tabular-nums dark:text-white/50">
       {formatSpeed(averageSpeedKmh(totals), locale)} ·{" "}
       {formatNumber(steps, locale)} {t("stats.steps").toLowerCase()}
+      <CaloriesPart totals={totals} />
     </span>
   )
+}
+
+function CaloriesPart({
+  totals,
+}: {
+  totals: Pick<SessionRecord, "durationSeconds" | "distanceMeters">
+}) {
+  const {locale} = useI18n()
+  const calories = useCalories(totals)
+  return calories === null ? null : ` · ${formatCalories(calories, locale)}`
 }
 
 function SingleSessionSummary({session}: {session: SessionRecord}) {
@@ -407,6 +420,7 @@ function SessionRow({session}: {session: SessionRecord}) {
           {formatKilometers(session.distanceMeters, locale)} ·{" "}
           {formatSpeed(averageSpeedKmh(session), locale)} ·{" "}
           {formatNumber(session.steps, locale)} {t("stats.steps").toLowerCase()}
+          <CaloriesPart totals={session} />
         </div>
       </div>
       <DeleteButton

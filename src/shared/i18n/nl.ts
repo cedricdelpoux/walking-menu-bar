@@ -82,6 +82,7 @@ const nl: Dictionary = {
     averageSpeed: "Gem. snelheid",
     maxSpeed: "Max. snelheid",
     sessions: "Sessies",
+    calories: "Calorieën",
     activeDays: "Dagen",
     bestDay: (params) => `Beste dag: ${params.distance}`,
     period: {
@@ -203,6 +204,8 @@ const nl: Dictionary = {
     pauseTimeoutHint: "Pauze die de sessie beëindigt.",
     minutes: "min",
     accentColor: "Accentkleur",
+    weight: "Gewicht",
+    weightHint: "Wordt gebruikt om de verbrande calorieën te schatten.",
     customColor: "Eigen kleur",
     launchAtLogin: "Openen bij inloggen",
     launchAtLoginDevHint: "Werkt alleen in de verpakte app.",

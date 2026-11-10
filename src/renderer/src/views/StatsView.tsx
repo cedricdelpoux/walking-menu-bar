@@ -1,6 +1,7 @@
 import {useState} from "react"
 import {startOfDay} from "@shared/day"
 import {
+  formatCalories,
   formatDuration,
   formatKilometerValue,
   formatKilometers,
@@ -14,6 +15,7 @@ import {
   type StatsBarSize,
   type StatsPeriod,
 } from "@shared/stats"
+import {useCalories} from "../calories"
 import {useHistory} from "../hooks"
 import {Card, Segmented, Stat, cn} from "../components/ui"
 import {useI18n} from "../i18n"
@@ -158,7 +160,12 @@ export function StatsView() {
   const {t, locale} = useI18n()
   const history = useHistory(ALL_HISTORY_DAYS)
   const [period, setPeriod] = useState<StatsPeriod>("month")
-  if (!history) return null
+  const stats = history && buildWalkStats(history, period)
+  const calories = useCalories({
+    durationSeconds: stats?.durationSeconds ?? 0,
+    distanceMeters: stats?.distanceMeters ?? 0,
+  })
+  if (!history || !stats) return null
   if (history.length === 0) {
     return (
       <p className="p-4 text-sm text-black/50 dark:text-white/50">
@@ -167,7 +174,6 @@ export function StatsView() {
     )
   }
 
-  const stats = buildWalkStats(history, period)
   return (
     <Card>
       <Segmented<StatsPeriod>
@@ -195,10 +201,17 @@ export function StatsView() {
         <Stat label={t("stats.activeDays")} value={stats.activeDays} />
       </div>
       {stats.bestDayMeters > 0 && (
-        <p className="mt-2 text-[11px] text-black/50 dark:text-white/50">
-          {t("stats.bestDay", {
-            distance: formatKilometers(stats.bestDayMeters, locale),
-          })}
+        <p className="mt-2 flex justify-between text-[11px] text-black/50 dark:text-white/50">
+          <span>
+            {t("stats.bestDay", {
+              distance: formatKilometers(stats.bestDayMeters, locale),
+            })}
+          </span>
+          {calories !== null && (
+            <span title={t("stats.calories")}>
+              ≈ {formatCalories(calories, locale)}
+            </span>
+          )}
         </p>
       )}
     </Card>

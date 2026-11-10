@@ -1,5 +1,6 @@
 import {useEffect, useState, type ReactNode} from "react"
 import {Power} from "lucide-react"
+import {WEIGHT_RANGE_KG} from "@shared/calories"
 import {formatNumber} from "@shared/format"
 import {LOCALES, type LanguagePreference} from "@shared/i18n"
 import type {LiveState} from "@shared/ipc"
@@ -137,6 +138,14 @@ export function SettingsView({
             onChange={(accentColor) => onChange({accentColor})}
           />
         </Row>
+        <NumberRow
+          label={t("settings.weight")}
+          hint={t("settings.weightHint")}
+          value={settings.weightKg}
+          range={WEIGHT_RANGE_KG}
+          unit="kg"
+          onChange={(weightKg) => onChange({weightKg})}
+        />
         <Row
           label={t("settings.launchAtLogin")}
           hint={
@@ -268,42 +277,46 @@ function SpeedShortcutsSetting({
   )
 }
 
-// Where the sessions end only matters on Strava when each session is its own activity.
-function PauseTimeoutRow({
-  minutes,
+function NumberRow({
+  label,
+  hint,
+  value,
+  range,
+  unit,
   onChange,
 }: {
-  minutes: number
-  onChange: (minutes: number) => void
+  label: string
+  hint: string
+  value: number | null
+  range: {min: number; max: number}
+  unit: string
+  onChange: (value: number | null) => void
 }) {
-  const {t} = useI18n()
-  const [typedMinutes, setTypedMinutes] = useState(String(minutes))
+  const [typedValue, setTypedValue] = useState(String(value ?? ""))
 
-  useEffect(() => setTypedMinutes(String(minutes)), [minutes])
+  useEffect(() => setTypedValue(String(value ?? "")), [value])
 
   const commit = () => {
-    const parsedMinutes = Number(typedMinutes)
-    if (Number.isFinite(parsedMinutes)) onChange(parsedMinutes)
-    else setTypedMinutes(String(minutes))
+    const parsedValue = Number(typedValue)
+    if (typedValue.trim() === "") onChange(null)
+    else if (Number.isFinite(parsedValue)) onChange(parsedValue)
+    else setTypedValue(String(value ?? ""))
   }
 
   return (
-    <Row
-      label={t("settings.pauseTimeout")}
-      hint={t("settings.pauseTimeoutHint")}
-    >
+    <Row label={label} hint={hint}>
       <span className="flex items-center gap-1.5 text-sm">
         <input
           type="number"
-          min={PAUSE_TIMEOUT_RANGE_MINUTES.min}
-          max={PAUSE_TIMEOUT_RANGE_MINUTES.max}
-          value={typedMinutes}
-          onChange={(event) => setTypedMinutes(event.target.value)}
+          min={range.min}
+          max={range.max}
+          value={typedValue}
+          onChange={(event) => setTypedValue(event.target.value)}
           onBlur={commit}
           onKeyDown={(event) => event.key === "Enter" && commit()}
           className={`${inputClassName} w-16 text-right tabular-nums`}
         />
-        {t("settings.minutes")}
+        {unit}
       </span>
     </Row>
   )
@@ -444,10 +457,17 @@ function StravaSettingsCard({
           />
         </div>
       </Row>
+      {/* Where the sessions end only matters on Strava when each session is its own activity. */}
       {isGroupedBySession && (
-        <PauseTimeoutRow
-          minutes={pauseTimeoutMinutes}
-          onChange={onPauseTimeoutChange}
+        <NumberRow
+          label={t("settings.pauseTimeout")}
+          hint={t("settings.pauseTimeoutHint")}
+          value={pauseTimeoutMinutes}
+          range={PAUSE_TIMEOUT_RANGE_MINUTES}
+          unit={t("settings.minutes")}
+          onChange={(minutes) =>
+            minutes !== null && onPauseTimeoutChange(minutes)
+          }
         />
       )}
       <div className="py-1.5">
