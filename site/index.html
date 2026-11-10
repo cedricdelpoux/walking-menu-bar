@@ -91,7 +91,8 @@
             <h3>Control from the menu bar</h3>
             <p>
               Start, pause and change the speed without leaving what you are
-              working on. The distance and time stay next to the icon.
+              working on, from the popover or with keyboard shortcuts that work
+              in any app. The distance and time stay next to the icon.
             </p>
           </article>
           <article>
@@ -111,8 +112,9 @@
           <article>
             <h3>History and stats</h3>
             <p>
-              Every session is recorded on your Mac, with its speed chart, and
-              summed up over 7 days, 30 days, 12 months or all time.
+              Every session is recorded on your Mac, with its speed chart and
+              its calories. Look back over 7 days to all time, see your
+              regularity on a heatmap, or export it all as CSV.
             </p>
           </article>
           <article>
@@ -131,6 +133,220 @@
             </p>
           </article>
         </div>
+      </section>
+
+      <section class="compare">
+        <h2>How it compares</h2>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col" class="ours">WalkingBar</th>
+                <th scope="col">
+                  <a
+                    href="https://www.walkingpad.com/blogs/all/how-to-use-the-ks-fit-app"
+                    >KS Fit</a
+                  >
+                  <span>Official app</span>
+                </th>
+                <th scope="col">
+                  <a
+                    href="https://apps.apple.com/us/app/walkingmate/id6754256683?mt=12"
+                    >WalkingMate</a
+                  >
+                </th>
+                <th scope="col">
+                  <a
+                    href="https://apps.apple.com/us/app/walkingpad/id6505090388"
+                    >WalkingPad+</a
+                  >
+                </th>
+                <th scope="col">
+                  <a href="https://walking-pad.pages.dev/">Paceora</a>
+                </th>
+                <th scope="col">
+                  <a href="https://github.com/klassm/walkingpad_macos_client"
+                    >WalkingPad macOS Client</a
+                  >
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Runs on</th>
+                <td>Mac menu bar</td>
+                <td>iPhone, Android</td>
+                <td>Mac menu bar</td>
+                <td>iPhone, iPad</td>
+                <td>Mac menu bar</td>
+                <td>Mac menu bar</td>
+              </tr>
+              <tr>
+                <th scope="row">Price</th>
+                <td>Free</td>
+                <td>Free</td>
+                <td>$6.99</td>
+                <td>Subscription</td>
+                <td>$9.99</td>
+                <td>Free</td>
+              </tr>
+              <tr>
+                <th scope="row">Open source</th>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td class="yes">✓</td>
+              </tr>
+              <tr>
+                <th scope="row">No account</th>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+                <td class="yes">✓</td>
+                <td class="yes">✓</td>
+              </tr>
+              <tr>
+                <th scope="row">Pads</th>
+                <td>KingSmith, tested on C2</td>
+                <td>WalkingPad, KingSmith</td>
+                <td>WalkingPad, Vitalwalk, FTMS</td>
+                <td>WalkingPad</td>
+                <td>C2, A1 Pro, R1 Pro, X21, X25</td>
+                <td>KingSmith</td>
+              </tr>
+              <tr>
+                <th scope="row">Start, pause and speed</th>
+                <td class="yes">✓</td>
+                <td class="yes">✓</td>
+                <td class="yes">✓</td>
+                <td class="yes">✓</td>
+                <td class="yes">✓</td>
+                <td class="yes">✓</td>
+              </tr>
+              <tr>
+                <th scope="row">Live stats in the menu bar</th>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+              </tr>
+              <tr>
+                <th scope="row">Speed presets</th>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+              </tr>
+              <tr>
+                <th scope="row">Global keyboard shortcuts</th>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td>With Alfred</td>
+              </tr>
+              <tr>
+                <th scope="row">Goals</th>
+                <td>Distance, time</td>
+                <td>Distance, time, steps, calories</td>
+                <td>Steps, distance</td>
+                <td>Steps, distance, calories</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+              </tr>
+              <tr>
+                <th scope="row">History and stats</th>
+                <td class="yes">✓</td>
+                <td class="yes">✓</td>
+                <td class="yes">✓</td>
+                <td class="yes">✓</td>
+                <td class="yes">✓</td>
+                <td class="yes">✓</td>
+              </tr>
+              <tr>
+                <th scope="row">Speed chart of each walk</th>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+              </tr>
+              <tr>
+                <th scope="row">Regularity heatmap</th>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+              </tr>
+              <tr>
+                <th scope="row">Calories</th>
+                <td class="yes">✓</td>
+                <td class="yes">✓</td>
+                <td class="yes">✓</td>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+              </tr>
+              <tr>
+                <th scope="row">CSV export</th>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td>With its API</td>
+              </tr>
+              <tr>
+                <th scope="row">Publishing to Strava</th>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+              </tr>
+              <tr>
+                <th scope="row">Apple Health</th>
+                <td class="no">—</td>
+                <td class="yes">✓</td>
+                <td>With its iPhone app</td>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+              </tr>
+              <tr>
+                <th scope="row">Home Assistant</th>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td class="yes">✓</td>
+                <td class="no">—</td>
+                <td class="no">—</td>
+                <td class="yes">✓</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note">
+          Compared in November 2026 from each app's store page, website or
+          README. A dash means the feature is not mentioned there. Apple Health
+          only exists on iPhone and iPad, so a Mac app cannot write to it on its
+          own. Something wrong?
+          <a href="https://github.com/cedricdelpoux/walkingpad-menu-bar/issues"
+            >Open an issue</a
+          >.
+        </p>
       </section>
 
       <section class="screens">
