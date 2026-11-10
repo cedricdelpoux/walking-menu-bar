@@ -33,7 +33,7 @@ const de: Dictionary = {
       connectFailed:
         "Schließe die App KS Fit auf deinem Telefon, falls sie verbunden ist: Das Laufband erlaubt nur eine Verbindung gleichzeitig.",
       unsupportedProtocol:
-        "Es bietet das KingSmith-Protokoll nicht an. Öffne bitte ein Issue mit dem Modellnamen.",
+        "Es bietet weder das KingSmith-Protokoll noch FTMS an. Öffne bitte ein Issue mit dem Modellnamen.",
       disconnected: "Automatische Wiederverbindung.",
     },
   },

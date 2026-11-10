@@ -33,7 +33,7 @@ const en = {
       connectFailed:
         "Close the KS Fit app on your phone if it is connected: the pad accepts only one connection at a time.",
       unsupportedProtocol:
-        "It does not expose the KingSmith protocol. Please open an issue with its model name.",
+        "It exposes neither the KingSmith protocol nor FTMS. Please open an issue with its model name.",
       disconnected: "Reconnecting automatically.",
     } satisfies Record<keyof typeof failureMessages, string>,
   },

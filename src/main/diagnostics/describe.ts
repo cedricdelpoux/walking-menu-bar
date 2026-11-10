@@ -50,7 +50,9 @@ export function describeCommand(command: PadCommand): string {
 export function describeConnectionState(state: PadConnectionState): string {
   switch (state.kind) {
     case "connected":
-      return `connection connected to ${state.padName} (${state.protocolId})`
+      return state.speedRange
+        ? `connection connected to ${state.padName} (${state.protocolId}, ${state.speedRange.minSpeedKmh}-${state.speedRange.maxSpeedKmh}km/h)`
+        : `connection connected to ${state.padName} (${state.protocolId})`
     case "connecting":
       return `connection connecting to ${state.padName}`
     case "retrying":

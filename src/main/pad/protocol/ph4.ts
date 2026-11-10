@@ -158,13 +158,21 @@ export function decodePh4Notification(data: Uint8Array): PadNotification {
   return {type: "unknown", bytes: data}
 }
 
+export const PH4_SERVICE_UUID = "fe00"
+const WRITE_CHARACTERISTIC_UUID = "fe02"
+
 export const ph4Protocol: PadProtocol = {
   id: "ph4",
-  serviceUuid: "fe00",
-  notifyCharacteristicUuid: "fe01",
-  writeCharacteristicUuid: "fe02",
+  notifyCharacteristicUuids: ["fe01"],
   // ph4-walkingpad spaces commands by at least 0.69 s, the pad drops them otherwise.
   minCommandIntervalMs: 700,
-  encodeCommand: encodePh4Command,
+  capabilities: {modes: true, steps: true},
+  setupWrites: [],
+  encodeCommand: (command) => [
+    {
+      characteristicUuid: WRITE_CHARACTERISTIC_UUID,
+      frame: encodePh4Command(command),
+    },
+  ],
   decodeNotification: decodePh4Notification,
 }

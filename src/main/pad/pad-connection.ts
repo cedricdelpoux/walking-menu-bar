@@ -7,6 +7,8 @@ import type {
   PadProtocol,
   PadRecord,
   PadStatus,
+  PadWrite,
+  SpeedRange,
 } from "./protocol/types"
 import {normalizeUuid} from "./protocol/uuid"
 
@@ -28,8 +30,7 @@ export interface PadConnectionOptions {
 interface PadLink {
   peripheral: Peripheral
   protocol: PadProtocol
-  writeCharacteristic: Characteristic
-  writeWithoutResponse: boolean
+  characteristics: Map<string, Characteristic>
 }
 
 class PadConnectionError extends Error {
@@ -41,6 +42,8 @@ class PadConnectionError extends Error {
 const MIN_RETRY_DELAY_MS = 2000
 const MAX_RETRY_DELAY_MS = 30000
 const ADAPTER_STARTUP_GRACE_MS = 3000
+// Some pads drop a subscription that comes too soon after the previous one.
+const SUBSCRIBE_INTERVAL_MS = 150
 
 const adapterState = () => (noble as unknown as {state: string}).state
 
@@ -98,7 +101,7 @@ export class PadConnection extends EventEmitter<PadConnectionEvents> {
   // Unlike status polling, user commands are never dropped: they wait for their turn.
   sendCommand(command: PadCommand): Promise<void> {
     if (!this.link) return Promise.reject(new Error("Pad is not connected"))
-    return this.enqueue(command)
+    return this.enqueue(this.link.protocol.encodeCommand(command))
   }
 
   private isCurrent(generation: number): boolean {
@@ -197,43 +200,57 @@ export class PadConnection extends EventEmitter<PadConnectionEvents> {
     const disconnected = new Promise<void>((resolve) =>
       peripheral.once("disconnect", () => resolve())
     )
-    let notifyCharacteristic: Characteristic | undefined
-    const onNotification = (data: Buffer) => {
-      const notification = this.link?.protocol.decodeNotification(data)
-      if (notification?.type === "status")
-        this.emit("status", notification.status)
-      else if (notification?.type === "lastRecord")
-        this.emit("record", notification.record)
+    let notifyCharacteristics: Characteristic[] = []
+    const listeners = new Map<Characteristic, (data: Buffer) => void>()
+    const listenTo = (characteristic: Characteristic) => {
+      const uuid = normalizeUuid(characteristic.uuid)
+      const listener = (data: Buffer) => {
+        const notification = this.link?.protocol.decodeNotification(
+          data,
+          uuid,
+          Date.now()
+        )
+        if (notification?.type === "status")
+          this.emit("status", notification.status)
+        else if (notification?.type === "lastRecord")
+          this.emit("record", notification.record)
+      }
+      listeners.set(characteristic, listener)
+      characteristic.on("data", listener)
     }
     try {
       const {services, characteristics} =
         await peripheral.discoverAllServicesAndCharacteristicsAsync()
-      const detected = detectProtocol(services.map((service) => service.uuid))
-      if (detected.kind !== "supported")
-        throw new PadConnectionError("unsupportedProtocol")
-
-      const {protocol} = detected
-      const findCharacteristic = (uuid: string) =>
-        characteristics.find(
-          (characteristic) => normalizeUuid(characteristic.uuid) === uuid
-        )
-      notifyCharacteristic = findCharacteristic(
-        protocol.notifyCharacteristicUuid
+      const characteristicsByUuid = new Map(
+        characteristics.map((characteristic) => [
+          normalizeUuid(characteristic.uuid),
+          characteristic,
+        ])
       )
-      const writeCharacteristic = findCharacteristic(
-        protocol.writeCharacteristicUuid
+      const protocol = detectProtocol(
+        services.map((service) => service.uuid),
+        {name: padName, characteristicUuids: [...characteristicsByUuid.keys()]}
       )
-      if (!notifyCharacteristic || !writeCharacteristic)
+      if (!protocol) throw new PadConnectionError("unsupportedProtocol")
+      const found = protocol.notifyCharacteristicUuids.map((uuid) =>
+        characteristicsByUuid.get(uuid)
+      )
+      if (found.some((characteristic) => !characteristic))
         throw new PadConnectionError("unsupportedProtocol")
+      notifyCharacteristics = found as Characteristic[]
 
       this.link = {
         peripheral,
         protocol,
-        writeCharacteristic,
-        writeWithoutResponse: !writeCharacteristic.properties.includes("write"),
+        characteristics: characteristicsByUuid,
       }
-      notifyCharacteristic.on("data", onNotification)
-      await notifyCharacteristic.subscribeAsync()
+      for (const characteristic of notifyCharacteristics) {
+        listenTo(characteristic)
+        await characteristic.subscribeAsync()
+        await delay(SUBSCRIBE_INTERVAL_MS)
+      }
+      const speedRange = await readSpeedRange(protocol, characteristicsByUuid)
+      for (const write of protocol.setupWrites) await this.enqueue([write])
       if (!this.isCurrent(generation)) return
 
       this.options.preferredPeripheralId = peripheral.id
@@ -242,6 +259,8 @@ export class PadConnection extends EventEmitter<PadConnectionEvents> {
         padName,
         peripheralId: peripheral.id,
         protocolId: protocol.id,
+        capabilities: protocol.capabilities,
+        speedRange,
       })
       this.startPolling()
 
@@ -254,7 +273,8 @@ export class PadConnection extends EventEmitter<PadConnectionEvents> {
       throw new PadConnectionError("connectFailed")
     } finally {
       this.interruptWait = undefined
-      notifyCharacteristic?.removeListener("data", onNotification)
+      for (const [characteristic, listener] of listeners)
+        characteristic.removeListener("data", listener)
       await this.dropLink(peripheral)
     }
   }
@@ -263,28 +283,35 @@ export class PadConnection extends EventEmitter<PadConnectionEvents> {
     clearInterval(this.pollTimer)
     const poll = () => {
       if (this.pendingCommands > 0) return
-      this.enqueue({type: "requestStatus"}).catch(() => undefined)
+      const writes = this.link?.protocol.encodeCommand({type: "requestStatus"})
+      if (writes?.length) this.enqueue(writes).catch(() => undefined)
     }
     poll()
     this.pollTimer = setInterval(poll, this.pollIntervalMs)
   }
 
-  private enqueue(command: PadCommand): Promise<void> {
+  private enqueue(writes: PadWrite[]): Promise<void> {
     this.pendingCommands++
-    const write = async () => {
-      const link = this.link
-      if (!link) throw new Error("Pad is not connected")
-      const waitMs =
-        this.lastWriteAt + link.protocol.minCommandIntervalMs - Date.now()
-      if (waitMs > 0) await delay(waitMs)
-      const frame = Buffer.from(link.protocol.encodeCommand(command))
-      await link.writeCharacteristic.writeAsync(
-        frame,
-        link.writeWithoutResponse
-      )
-      this.lastWriteAt = Date.now()
+    const send = async () => {
+      for (const write of writes) {
+        const link = this.link
+        if (!link) throw new Error("Pad is not connected")
+        const characteristic = link.characteristics.get(
+          write.characteristicUuid
+        )
+        if (!characteristic)
+          throw new Error(`Missing characteristic ${write.characteristicUuid}`)
+        const waitMs =
+          this.lastWriteAt + link.protocol.minCommandIntervalMs - Date.now()
+        if (waitMs > 0) await delay(waitMs)
+        await characteristic.writeAsync(
+          Buffer.from(write.frame),
+          write.withoutResponse ?? !characteristic.properties.includes("write")
+        )
+        this.lastWriteAt = Date.now()
+      }
     }
-    const result = this.commandQueue.then(write)
+    const result = this.commandQueue.then(send)
     this.commandQueue = result.catch(() => undefined)
     return result.finally(() => this.pendingCommands--)
   }
@@ -308,6 +335,18 @@ export class PadConnection extends EventEmitter<PadConnectionEvents> {
       this.interruptWait = done
     })
   }
+}
+
+async function readSpeedRange(
+  protocol: PadProtocol,
+  characteristics: Map<string, Characteristic>
+): Promise<SpeedRange | null> {
+  const {speedRange} = protocol
+  const characteristic =
+    speedRange && characteristics.get(speedRange.characteristicUuid)
+  if (!speedRange || !characteristic) return null
+  const data = await characteristic.readAsync().catch(() => null)
+  return data ? speedRange.decode(data) : null
 }
 
 const delay = (ms: number) =>

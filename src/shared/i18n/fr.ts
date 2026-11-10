@@ -33,7 +33,7 @@ const fr: Dictionary = {
       connectFailed:
         "Ferme l'app KS Fit sur ton téléphone si elle est connectée : le tapis n'accepte qu'une connexion à la fois.",
       unsupportedProtocol:
-        "Il n'expose pas le protocole KingSmith. Ouvre une issue en précisant son modèle.",
+        "Il n'expose ni le protocole KingSmith ni FTMS. Ouvre une issue en précisant son modèle.",
       disconnected: "Reconnexion automatique en cours.",
     },
   },

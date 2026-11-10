@@ -1,10 +1,17 @@
-import type {PadMode, PadRecord, PadStatus} from "../../../shared/pad"
+import type {
+  PadCapabilities,
+  PadMode,
+  PadRecord,
+  PadStatus,
+  SpeedRange,
+} from "../../../shared/pad"
 
 export type {
   BeltState,
   PadMode,
   PadRecord,
   PadStatus,
+  SpeedRange,
 } from "../../../shared/pad"
 
 export type PadCommand =
@@ -20,12 +27,35 @@ export type PadNotification =
   | {type: "lastRecord"; record: PadRecord}
   | {type: "unknown"; bytes: Uint8Array}
 
+export interface PadWrite {
+  characteristicUuid: string
+  frame: Uint8Array
+  // Left out, it follows the properties of the characteristic.
+  withoutResponse?: boolean
+}
+
 export interface PadProtocol {
   id: string
-  serviceUuid: string
-  notifyCharacteristicUuid: string
-  writeCharacteristicUuid: string
+  notifyCharacteristicUuids: string[]
   minCommandIntervalMs: number
-  encodeCommand(command: PadCommand): Uint8Array
-  decodeNotification(data: Uint8Array): PadNotification
+  capabilities: PadCapabilities
+  // Sent once the notifications are on, before any command.
+  setupWrites: PadWrite[]
+  // A command the protocol has no frame for is encoded as no write at all.
+  encodeCommand(command: PadCommand): PadWrite[]
+  decodeNotification(
+    data: Uint8Array,
+    characteristicUuid: string,
+    receivedAt: number
+  ): PadNotification
+  speedRange?: {
+    characteristicUuid: string
+    decode(data: Uint8Array): SpeedRange | null
+  }
+}
+
+// What the protocol needs to know about the pad it talks to.
+export interface PadProfile {
+  name: string
+  characteristicUuids: string[]
 }

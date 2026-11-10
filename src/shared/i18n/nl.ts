@@ -33,7 +33,7 @@ const nl: Dictionary = {
       connectFailed:
         "Sluit de KS Fit-app op je telefoon als die verbonden is: de loopband accepteert maar één verbinding tegelijk.",
       unsupportedProtocol:
-        "Hij biedt het KingSmith-protocol niet aan. Open een issue met de modelnaam.",
+        "Hij biedt het KingSmith-protocol noch FTMS aan. Open een issue met de modelnaam.",
       disconnected: "Automatisch opnieuw verbinden.",
     },
   },

@@ -1,30 +1,36 @@
-import {ph4Protocol} from "./ph4"
-import type {PadProtocol} from "./types"
+import {createFtmsProtocol, FTMS_SERVICE_UUID} from "./ftms"
+import {PH4_SERVICE_UUID, ph4Protocol} from "./ph4"
+import type {PadProfile, PadProtocol} from "./types"
 import {normalizeUuid} from "./uuid"
 
-export const FTMS_SERVICE_UUID = "1826"
+// The KingSmith protocol comes first: it is the one tested, and it has the modes.
+const SUPPORTED_PROTOCOLS: Array<{
+  serviceUuid: string
+  create: (profile: PadProfile) => PadProtocol
+}> = [
+  {serviceUuid: PH4_SERVICE_UUID, create: () => ph4Protocol},
+  {serviceUuid: FTMS_SERVICE_UUID, create: createFtmsProtocol},
+]
 
-export type DetectedProtocol =
-  {kind: "supported"; protocol: PadProtocol} | {kind: "ftms"} | {kind: "none"}
-
-const SUPPORTED_PROTOCOLS: PadProtocol[] = [ph4Protocol]
-
-export function detectProtocol(serviceUuids: string[]): DetectedProtocol {
+export function detectProtocol(
+  serviceUuids: string[],
+  profile: PadProfile
+): PadProtocol | null {
   const services = new Set(serviceUuids.map(normalizeUuid))
-  const protocol = SUPPORTED_PROTOCOLS.find((candidate) =>
-    services.has(candidate.serviceUuid)
+  const supported = SUPPORTED_PROTOCOLS.find(({serviceUuid}) =>
+    services.has(serviceUuid)
   )
-  if (protocol) return {kind: "supported", protocol}
-  if (services.has(FTMS_SERVICE_UUID)) return {kind: "ftms"}
-  return {kind: "none"}
+  return supported?.create(profile) ?? null
 }
 
-const PAD_NAME_PATTERN = /walkingpad|^ks[-_ ]/i
+// ZP-ZEALR1 is a MC-21 sold under another brand.
+const PAD_NAME_PATTERN = /walkingpad|^ks[-_ ]|^zp-zealr1/i
 
+// Bikes and rowers advertise FTMS too, so only the KingSmith service is enough without the name.
 export function looksLikeWalkingPad(
   name: string | undefined,
   advertisedServiceUuids: string[]
 ): boolean {
   if (name && PAD_NAME_PATTERN.test(name)) return true
-  return detectProtocol(advertisedServiceUuids).kind !== "none"
+  return advertisedServiceUuids.map(normalizeUuid).includes(PH4_SERVICE_UUID)
 }

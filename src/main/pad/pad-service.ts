@@ -15,6 +15,7 @@ import {
 } from "../../shared/goal"
 import type {LiveState, StartRequestState} from "../../shared/ipc"
 import type {
+  PadCapabilities,
   PadConnectionState,
   PadModel,
   PadStatus,
@@ -283,7 +284,13 @@ export class PadService extends EventEmitter<PadServiceEvents> {
     this.preferredMode = mode
     this.appState.set(PREFERRED_MODE_KEY, mode)
     this.publish()
-    await this.sendCommand({type: "setMode", mode}, "userRequest")
+    if (this.hasCapability("modes"))
+      await this.sendCommand({type: "setMode", mode}, "userRequest")
+  }
+
+  private hasCapability(capability: keyof PadCapabilities): boolean {
+    const state = this.connection.getState()
+    return state.kind !== "connected" || state.capabilities[capability]
   }
 
   setGoal(scope: GoalScope, goal: WalkGoal | null): void {
@@ -353,7 +360,10 @@ export class PadService extends EventEmitter<PadServiceEvents> {
     this.diagnostics.write(describeConnectionState(state))
     this.lastLoggedStatusKey = null
     if (state.kind === "connected") {
-      this.model = identifyPadModel(state.padName)
+      this.model = {
+        ...identifyPadModel(state.padName),
+        ...state.speedRange,
+      }
       this.appState.set(PERIPHERAL_ID_KEY, state.peripheralId)
     } else {
       this.status = null
@@ -409,8 +419,10 @@ export class PadService extends EventEmitter<PadServiceEvents> {
     const lastStepAt = this.lastStep?.at ?? now
     this.lastStep = null
     if (!hasJustStopped || this.isStopRequested) return
-    const cause =
-      now - lastStepAt >= PAD_STOP_WITHOUT_STEPS_MS ? "noSteps" : "padOrRemote"
+    const hasStoppedWithoutSteps =
+      this.hasCapability("steps") &&
+      now - lastStepAt >= PAD_STOP_WITHOUT_STEPS_MS
+    const cause = hasStoppedWithoutSteps ? "noSteps" : "padOrRemote"
     this.padStop = {cause, at: now}
     this.diagnostics.write(
       `pad stopped on its own: ${cause}, last step ${Math.round((now - lastStepAt) / 1000)}s before`
@@ -437,6 +449,11 @@ export class PadService extends EventEmitter<PadServiceEvents> {
   }
 
   private async sendStartCommands(reason: CommandReason): Promise<void> {
+    if (this.hasCapability("modes")) await this.sendModeBeforeStart(reason)
+    await this.sendCommand({type: "start"}, reason)
+  }
+
+  private async sendModeBeforeStart(reason: CommandReason): Promise<void> {
     const mode = this.status?.mode
     // A sleeping C2 ignores every command but a switch to automatic mode, which wakes it up.
     if (mode === "standby")
@@ -446,7 +463,6 @@ export class PadService extends EventEmitter<PadServiceEvents> {
         {type: "setMode", mode: this.preferredMode},
         reason
       )
-    await this.sendCommand({type: "start"}, reason)
   }
 
   private retryPendingStart(status: PadStatus): void {
@@ -472,7 +488,7 @@ export class PadService extends EventEmitter<PadServiceEvents> {
   private restorePreferredModeAfterStart(status: PadStatus): void {
     const now = Date.now()
     if (this.pendingStart || now > this.enforcePreferredModeUntil) return
-    if (status.mode === this.preferredMode) {
+    if (!this.hasCapability("modes") || status.mode === this.preferredMode) {
       this.enforcePreferredModeUntil = 0
       return
     }

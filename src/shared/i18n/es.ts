@@ -33,7 +33,7 @@ const es: Dictionary = {
       connectFailed:
         "Cierra la app KS Fit en tu teléfono si está conectada: la cinta solo acepta una conexión a la vez.",
       unsupportedProtocol:
-        "No expone el protocolo KingSmith. Abre una issue indicando su modelo.",
+        "No expone ni el protocolo KingSmith ni FTMS. Abre una issue indicando su modelo.",
       disconnected: "Reconectando automáticamente.",
     },
   },

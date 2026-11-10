@@ -5,13 +5,16 @@
 import noble, {type Characteristic, type Peripheral} from "@stoprocent/noble"
 import {
   detectProtocol,
-  FTMS_SERVICE_UUID,
   looksLikeWalkingPad,
 } from "../src/main/pad/protocol/detect"
-import type {PadProtocol, PadStatus} from "../src/main/pad/protocol/types"
+import {FTMS_SERVICE_UUID} from "../src/main/pad/protocol/ftms"
+import type {
+  PadProtocol,
+  PadStatus,
+  PadWrite,
+} from "../src/main/pad/protocol/types"
 import {normalizeUuid} from "../src/main/pad/protocol/uuid"
 
-const FTMS_TREADMILL_DATA_UUID = "2acd"
 const STATUS_POLL_INTERVAL_MS = 1000
 const CONNECT_TIMEOUT_MS = 15000
 
@@ -169,50 +172,66 @@ function formatStatus(status: PadStatus): string {
   ].join("  ")
 }
 
-async function streamPh4Statuses(
+async function streamStatuses(
   peripheral: Peripheral,
   protocol: PadProtocol,
   options: ProbeOptions
 ) {
-  const notifyCharacteristic = findCharacteristic(
-    peripheral,
-    protocol.notifyCharacteristicUuid
+  const notifyCharacteristics = protocol.notifyCharacteristicUuids.map((uuid) =>
+    findCharacteristic(peripheral, uuid)
   )
-  const writeCharacteristic = findCharacteristic(
-    peripheral,
-    protocol.writeCharacteristicUuid
-  )
-  if (!notifyCharacteristic || !writeCharacteristic) {
+  if (notifyCharacteristics.some((found) => !found)) {
     throw new Error(
-      `Characteristics ${protocol.notifyCharacteristicUuid}/${protocol.writeCharacteristicUuid} not found`
+      `Characteristics ${protocol.notifyCharacteristicUuids.join(", ")} not found`
     )
   }
 
-  notifyCharacteristic.on("data", (data: Buffer) => {
-    const notification = protocol.decodeNotification(data)
-    const raw = options.showRaw ? `  <${toHex(data)}>` : ""
-    if (notification.type === "status")
-      console.log(`${timestamp()}  ${formatStatus(notification.status)}${raw}`)
-    else if (notification.type === "lastRecord")
-      console.log(
-        `${timestamp()}  last record: ${JSON.stringify(notification.record)}${raw}`
-      )
-    else if (options.showRaw) console.log(`${timestamp()}  unknown frame${raw}`)
-  })
-  await notifyCharacteristic.subscribeAsync()
+  for (const characteristic of notifyCharacteristics as Characteristic[]) {
+    const uuid = normalizeUuid(characteristic.uuid)
+    characteristic.on("data", (data: Buffer) => {
+      const notification = protocol.decodeNotification(data, uuid, Date.now())
+      const raw = options.showRaw ? `  <${uuid} ${toHex(data)}>` : ""
+      if (notification.type === "status")
+        console.log(
+          `${timestamp()}  ${formatStatus(notification.status)}${raw}`
+        )
+      else if (notification.type === "lastRecord")
+        console.log(
+          `${timestamp()}  last record: ${JSON.stringify(notification.record)}${raw}`
+        )
+      else if (options.showRaw)
+        console.log(`${timestamp()}  unknown frame${raw}`)
+    })
+    await characteristic.subscribeAsync()
+    await new Promise((resolve) => setTimeout(resolve, 150))
+  }
 
-  const writeWithoutResponse = !writeCharacteristic.properties.includes("write")
-  const statusRequest = Buffer.from(
-    protocol.encodeCommand({type: "requestStatus"})
-  )
+  const write = async (writes: PadWrite[]) => {
+    for (const {characteristicUuid, frame, withoutResponse} of writes) {
+      const characteristic = findCharacteristic(peripheral, characteristicUuid)
+      if (!characteristic) {
+        console.error(`Characteristic ${characteristicUuid} not found`)
+        continue
+      }
+      await characteristic
+        .writeAsync(
+          Buffer.from(frame),
+          withoutResponse ?? !characteristic.properties.includes("write")
+        )
+        .catch((error) => console.error("Write failed:", error))
+      await new Promise((resolve) =>
+        setTimeout(resolve, protocol.minCommandIntervalMs)
+      )
+    }
+  }
+  // The setup unlocks the pads that need it: it never moves the belt.
+  await write(protocol.setupWrites)
+  const statusRequest = protocol.encodeCommand({type: "requestStatus"})
   console.log(
-    `\nProtocol ${protocol.id}: polling status every ${STATUS_POLL_INTERVAL_MS} ms. Ctrl+C to quit.\n`
+    statusRequest.length > 0
+      ? `\nProtocol ${protocol.id}: polling status every ${STATUS_POLL_INTERVAL_MS} ms. Ctrl+C to quit.\n`
+      : `\nProtocol ${protocol.id}: listening to the pad. Ctrl+C to quit.\n`
   )
-  const write = (frame: Uint8Array) =>
-    writeCharacteristic
-      .writeAsync(Buffer.from(frame), writeWithoutResponse)
-      .catch((error) => console.error("Write failed:", error))
-  const poll = () => write(statusRequest)
   if (options.requestRecords) {
     for (const mode of [0, 1] as const) {
       console.log(`${timestamp()}  requesting records (mode ${mode})`)
@@ -220,21 +239,10 @@ async function streamPh4Statuses(
       await new Promise((resolve) => setTimeout(resolve, 2000))
     }
   }
+  if (statusRequest.length === 0) return undefined
+  const poll = () => write(statusRequest)
   await poll()
   return setInterval(poll, STATUS_POLL_INTERVAL_MS)
-}
-
-async function streamFtmsData(peripheral: Peripheral) {
-  const treadmillData = findCharacteristic(peripheral, FTMS_TREADMILL_DATA_UUID)
-  if (!treadmillData)
-    throw new Error("FTMS treadmill data characteristic (2acd) not found")
-  console.log(
-    "\nFTMS only: dumping raw treadmill data frames (not decoded yet). Ctrl+C to quit.\n"
-  )
-  treadmillData.on("data", (data: Buffer) =>
-    console.log(`${timestamp()}  ftms <${toHex(data)}>`)
-  )
-  await treadmillData.subscribeAsync()
 }
 
 async function main() {
@@ -277,10 +285,15 @@ async function main() {
   })
 
   const serviceUuids = await printGattTree(peripheral)
-  const detected = detectProtocol(serviceUuids)
-  if (detected.kind === "supported")
-    pollTimer = await streamPh4Statuses(peripheral, detected.protocol, options)
-  else if (detected.kind === "ftms") await streamFtmsData(peripheral)
+  const protocol = detectProtocol(serviceUuids, {
+    name: peripheral.advertisement.localName ?? "",
+    characteristicUuids: peripheral.services.flatMap((service) =>
+      (service.characteristics ?? []).map((characteristic) =>
+        normalizeUuid(characteristic.uuid)
+      )
+    ),
+  })
+  if (protocol) pollTimer = await streamStatuses(peripheral, protocol, options)
   else {
     console.error(
       `\nNo known protocol: neither fe00 (KingSmith) nor ${FTMS_SERVICE_UUID} (FTMS) is exposed.`

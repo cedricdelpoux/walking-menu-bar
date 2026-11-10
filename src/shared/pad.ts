@@ -28,6 +28,16 @@ export interface PadModel {
   maxSpeedKmh: number
 }
 
+export interface SpeedRange {
+  minSpeedKmh: number
+  maxSpeedKmh: number
+}
+
+export interface PadCapabilities {
+  modes: boolean
+  steps: boolean
+}
+
 export type PadConnectionFailure =
   "padNotFound" | "connectFailed" | "unsupportedProtocol" | "disconnected"
 
@@ -41,6 +51,8 @@ export type PadConnectionState =
       padName: string
       peripheralId: string
       protocolId: string
+      capabilities: PadCapabilities
+      speedRange: SpeedRange | null
     }
   | {kind: "retrying"; failure: PadConnectionFailure; retryAt: number}
 

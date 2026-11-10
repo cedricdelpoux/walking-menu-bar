@@ -32,11 +32,14 @@ const STARTING_IN_MANUAL = status("manual", 9, "starting")
 
 class FakeConnection extends EventEmitter {
   sendCommand = vi.fn(async (_command: PadCommand) => undefined)
+  capabilities = {modes: true, steps: true}
   getState = () => ({
     kind: "connected" as const,
     padName: "KS-BLC2",
     peripheralId: "id",
     protocolId: "ph4",
+    capabilities: this.capabilities,
+    speedRange: null,
   })
 }
 
@@ -383,6 +386,18 @@ describe("PadService preferred mode", () => {
 
     await service.stopBelt()
     expect(service.getLiveState().startRequest).toBeNull()
+  })
+
+  it("sends no mode to a pad without modes", async () => {
+    connection.capabilities = {modes: false, steps: false}
+    const service = createService()
+    receive(status("manual", 0, "idle"))
+    await service.setMode("automatic")
+    await service.startBelt()
+    receive(RUNNING_IN_MANUAL)
+    vi.advanceTimersByTime(10_000)
+    receive(RUNNING_IN_MANUAL)
+    expect(sentCommandTypes()).toEqual(["start"])
   })
 
   it("starts or pauses the belt with one toggle", async () => {

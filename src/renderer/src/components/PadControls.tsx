@@ -73,6 +73,8 @@ export function PadControls({
 
   const {status, model} = live
   const isConnected = live.connection.kind === "connected" && status !== null
+  const hasModes =
+    live.connection.kind !== "connected" || live.connection.capabilities.modes
   const isRunning = status?.beltState === "running"
   const isStarting = status?.beltState === "starting"
   const statusMode = status?.mode
@@ -176,17 +178,19 @@ export function PadControls({
         </div>
       )}
 
-      <div className={speedShortcuts.length > 0 ? "mt-2" : "mt-3"}>
-        <Segmented<SelectableMode>
-          value={mode}
-          disabled={!isConnected}
-          onChange={(nextMode) => run(() => api.setMode(nextMode))}
-          options={[
-            {value: "manual", label: t("controls.manual")},
-            {value: "automatic", label: t("controls.automatic")},
-          ]}
-        />
-      </div>
+      {hasModes && (
+        <div className={speedShortcuts.length > 0 ? "mt-2" : "mt-3"}>
+          <Segmented<SelectableMode>
+            value={mode}
+            disabled={!isConnected}
+            onChange={(nextMode) => run(() => api.setMode(nextMode))}
+            options={[
+              {value: "manual", label: t("controls.manual")},
+              {value: "automatic", label: t("controls.automatic")},
+            ]}
+          />
+        </div>
+      )}
       <div className="mt-2 flex items-center gap-2">
         {isWakingUp ? (
           <Button variant="primary" className="flex-1" disabled>
