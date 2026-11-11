@@ -1,6 +1,6 @@
 {
   "name": "walkingpad-menu-bar",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Unofficial macOS menu bar app to drive a KingSmith WalkingPad and publish your walks to Strava",
   "author": "Cédric Delpoux",
   "license": "MIT",
